@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Order — My Catering</title>
+<title>Order — KZ Catering</title>
 <style>
   :root { --brand:#128c7e; --bg:#f5f6f7; --line:#e2e5e9; }
   * { box-sizing:border-box; }
@@ -31,10 +31,13 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>🍱 Order from My Catering</h1>
+  <h1>🍱 Order from KZ Catering</h1>
 
   <label>Your name</label>
   <input id="name" placeholder="e.g. Sarah">
+
+  <label>Your phone number</label>
+  <input id="phone" type="tel" placeholder="e.g. 0123456789" inputmode="tel">
 
   <label>Delivery / pickup date</label>
   <input id="date" type="date">
@@ -110,6 +113,7 @@
 
   function buildMessage() {
     const name    = document.getElementById("name").value.trim();
+    const phone   = document.getElementById("phone").value.trim();
     const date    = document.getElementById("date").value;
     const time    = document.getElementById("time").value;
     const address = document.getElementById("address").value.trim();
@@ -117,6 +121,24 @@
 
     const lines = ["*New Catering Order*", ""];
     if (name)  lines.push(`Name: ${name}`);
+    if (phone) {
+      const digits = phone.replace(/\D/g, "");
+      const waNum  = digits.startsWith("0") ? "6" + digits : digits;
+      const summary = [
+        `*Order Confirmation — KZ Catering* ✅`,
+        ``,
+        `Hi${name ? " " + name : ""}! Here is your order summary:`,
+      ];
+      MENU.forEach((item, i) => {
+        if (qty[i] > 0)
+          summary.push(`• ${qty[i]} × ${item.name} — ${CURRENCY} ${(item.price * qty[i]).toFixed(2)}`);
+      });
+      summary.push(``, `*Total: ${CURRENCY} ${total().toFixed(2)}*`);
+      summary.push(``, `Thank you for ordering with KZ Catering! 🍱`);
+      const confirmLink = `https://wa.me/${waNum}?text=${encodeURIComponent(summary.join("\n"))}`;
+      lines.push(`Phone: ${phone}`);
+      lines.push(`Reply to confirm order → ${confirmLink}`);
+    }
     if (date)  lines.push(`Date: ${date}`);
     if (time)  lines.push(`Time: ${time}`);
     lines.push(address ? `Delivery to: ${address}` : "Pickup");
