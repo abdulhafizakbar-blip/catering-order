@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order — My Catering</title>
+<style>
+  :root { --brand:#128c7e; --bg:#f5f6f7; --line:#e2e5e9; }
+  * { box-sizing:border-box; }
+  body { font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         margin:0; background:var(--bg); color:#1a1a1a; }
+  .wrap { max-width:560px; margin:0 auto; padding:20px 16px 120px; }
+  h1 { font-size:1.4rem; margin:.2rem 0 1rem; }
+  label { display:block; font-weight:600; font-size:.9rem; margin:14px 0 4px; }
+  input, textarea, select { width:100%; padding:10px; border:1px solid var(--line);
+         border-radius:10px; font-size:1rem; background:#fff; }
+  .item { display:flex; align-items:center; justify-content:space-between;
+          gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .item .info { flex:1; }
+  .item .price { color:#666; font-size:.85rem; }
+  .qty { width:64px; text-align:center; }
+  .total { font-size:1.2rem; font-weight:700; margin-top:16px; }
+  .bar { position:fixed; left:0; right:0; bottom:0; background:#fff;
+         border-top:1px solid var(--line); padding:12px 16px; }
+  .bar .inner { max-width:560px; margin:0 auto; display:flex; gap:12px; align-items:center; }
+  button { flex:1; background:var(--brand); color:#fff; border:0; padding:14px;
+           border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .hint { color:#666; font-size:.8rem; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🍱 Order from My Catering</h1>
+
+  <label>Your name</label>
+  <input id="name" placeholder="e.g. Sarah">
+
+  <label>Delivery / pickup date</label>
+  <input id="date" type="date">
+
+  <label>Time</label>
+  <input id="time" type="time">
+
+  <label>Delivery address <span class="hint">(leave blank for pickup)</span></label>
+  <textarea id="address" rows="2" placeholder="Street, city, notes for driver"></textarea>
+
+  <h2 style="margin-top:22px;font-size:1.1rem">Menu</h2>
+  <div id="menu"></div>
+
+  <label>Notes for us</label>
+  <textarea id="notes" rows="2" placeholder="Allergies, packaging, etc."></textarea>
+
+  <div class="total" id="total">Total: RM 0.00</div>
+</div>
+
+<div class="bar">
+  <div class="inner">
+    <button id="send" disabled>Order via WhatsApp</button>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────────────────
+  // 1) YOUR WHATSAPP NUMBER — country code, no +, no spaces
+  const WHATSAPP_NUMBER = "60123456789";
+  const CURRENCY = "RM";
+
+  // 2) THE LIST — edit these lines to update your menu.
+  //    Add / remove items, change names and prices. That's it.
+  const MENU = [
+    { name: "Nasi Lemak Set",      price: 12.00 },
+    { name: "Chicken Rendang",     price: 15.50 },
+    { name: "Mee Goreng",          price: 10.00 },
+    { name: "Fruit Platter (S)",   price: 18.00 },
+    { name: "Bottled Water",       price:  2.00 },
+  ];
+  // ─────────────────────────────────────────────────────────
+
+  const qty = MENU.map(() => 0);
+  const menuEl = document.getElementById("menu");
+
+  MENU.forEach((item, i) => {
+    const row = document.createElement("div");
+    row.className = "item";
+    row.innerHTML = `
+      <div class="info">
+        <div>${item.name}</div>
+        <div class="price">${CURRENCY} ${item.price.toFixed(2)}</div>
+      </div>
+      <input class="qty" type="number" min="0" value="0" inputmode="numeric">`;
+    const input = row.querySelector("input");
+    input.addEventListener("input", () => {
+      qty[i] = Math.max(0, parseInt(input.value || "0", 10));
+      render();
+    });
+    menuEl.appendChild(row);
+  });
+
+  function total() {
+    return MENU.reduce((sum, item, i) => sum + item.price * qty[i], 0);
+  }
+
+  function render() {
+    const t = total();
+    document.getElementById("total").textContent =
+      `Total: ${CURRENCY} ${t.toFixed(2)}`;
+    document.getElementById("send").disabled = t <= 0;
+  }
+
+  function buildMessage() {
+    const name    = document.getElementById("name").value.trim();
+    const date    = document.getElementById("date").value;
+    const time    = document.getElementById("time").value;
+    const address = document.getElementById("address").value.trim();
+    const notes   = document.getElementById("notes").value.trim();
+
+    const lines = ["*New Catering Order*", ""];
+    if (name)  lines.push(`Name: ${name}`);
+    if (date)  lines.push(`Date: ${date}`);
+    if (time)  lines.push(`Time: ${time}`);
+    lines.push(address ? `Delivery to: ${address}` : "Pickup");
+    lines.push("", "*Items:*");
+
+    MENU.forEach((item, i) => {
+      if (qty[i] > 0)
+        lines.push(`• ${qty[i]} × ${item.name} — ${CURRENCY} ${(item.price*qty[i]).toFixed(2)}`);
+    });
+
+    lines.push("", `*Total: ${CURRENCY} ${total().toFixed(2)}*`);
+    if (notes) lines.push("", `Notes: ${notes}`);
+    return lines.join("\n");
+  }
+
+  document.getElementById("send").addEventListener("click", () => {
+    const text = encodeURIComponent(buildMessage());
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank");
+  });
+
+  render();
+</script>
+</body>
+</html>
