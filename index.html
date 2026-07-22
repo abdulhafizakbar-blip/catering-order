@@ -121,24 +121,7 @@
 
     const lines = ["*New Catering Order*", ""];
     if (name)  lines.push(`Name: ${name}`);
-    if (phone) {
-      const digits = phone.replace(/\D/g, "");
-      const waNum  = digits.startsWith("0") ? "6" + digits : digits;
-      const summary = [
-        `*Order Confirmation — KZ Catering* ✅`,
-        ``,
-        `Hi${name ? " " + name : ""}! Here is your order summary:`,
-      ];
-      MENU.forEach((item, i) => {
-        if (qty[i] > 0)
-          summary.push(`• ${qty[i]} × ${item.name} — ${CURRENCY} ${(item.price * qty[i]).toFixed(2)}`);
-      });
-      summary.push(``, `*Total: ${CURRENCY} ${total().toFixed(2)}*`);
-      summary.push(``, `Thank you for ordering with KZ Catering! 🍱`);
-      const confirmLink = `https://wa.me/${waNum}?text=${encodeURIComponent(summary.join("\n"))}`;
-      lines.push(`Phone: ${phone}`);
-      lines.push(`Reply to confirm order → ${confirmLink}`);
-    }
+    if (phone) lines.push(`Phone: ${phone}`);
     if (date)  lines.push(`Date: ${date}`);
     if (time)  lines.push(`Time: ${time}`);
     lines.push(address ? `Delivery to: ${address}` : "Pickup");
