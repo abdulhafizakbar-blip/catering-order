@@ -542,7 +542,7 @@
           <div class="hi-total">RM ${q.total.toFixed(2)}</div>
         </div>
         <div class="hi-meta">
-          ${q.phone} &nbsp;·&nbsp; ${fmtDate(q.date)} &nbsp;·&nbsp;
+          #${q.id} &nbsp;·&nbsp; ${q.phone} &nbsp;·&nbsp; ${fmtDate(q.date)} &nbsp;·&nbsp;
           ${fmtDate(new Date(q.createdAt).toLocaleDateString("en-CA"))}
         </div>
       </div>`).join("");
