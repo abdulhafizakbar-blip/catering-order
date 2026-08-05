@@ -219,7 +219,6 @@
 <!-- ══ BOTTOM BAR ══ -->
 <div class="bar">
   <div class="inner" id="bar-new">
-    <button class="btn btn-secondary" id="btn-wa"  onclick="sendWhatsApp()"  disabled>Send to Customer</button>
     <button class="btn btn-primary"   id="btn-save" onclick="saveAndPrint()" disabled>Print Quotation</button>
   </div>
 </div>
@@ -381,7 +380,6 @@
   }
 
   function setBarState(hasItems) {
-    document.getElementById("btn-wa").disabled   = !hasItems;
     document.getElementById("btn-save").disabled = !hasItems;
   }
 
