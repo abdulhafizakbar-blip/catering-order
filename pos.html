@@ -414,6 +414,12 @@
   function saveAndPrint() {
     const q = buildQuotation();
     if (!validateForm(q)) return;
+    const confirmed = confirm(
+      `Confirm order for ${q.customer}?\n\n` +
+      q.items.map(it => `• ${it.qty} × ${it.name}`).join("\n") +
+      `\n\nTotal: RM ${q.total.toFixed(2)}`
+    );
+    if (!confirmed) return;
     saveToHistory(q);
     buildPrintArea(q);
     window.print();
