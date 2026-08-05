@@ -211,8 +211,12 @@
 <div class="page" id="page-history">
   <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px">
     <h2 style="font-size:1.1rem">Quotation History</h2>
-    <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.82rem" onclick="exportData()">Export JSON</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.82rem" onclick="importData()">Import JSON</button>
+      <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.82rem" onclick="exportData()">Export JSON</button>
+    </div>
   </div>
+  <input type="file" id="import-input" accept=".json" style="display:none" onchange="handleImport(event)">
   <div id="history-list"></div>
 </div>
 
@@ -535,7 +539,11 @@
 
   // ── Render history list ──
   function renderHistory() {
-    const h = getHistory();
+    const h = getHistory().slice().sort((a, b) => {
+      const da = a.date && a.date !== "—" ? a.date : "0000-00-00";
+      const db = b.date && b.date !== "—" ? b.date : "0000-00-00";
+      return db.localeCompare(da);
+    });
     const el = document.getElementById("history-list");
     if (h.length === 0) {
       el.innerHTML = `<div class="empty-state">No quotations saved yet.</div>`;
@@ -637,6 +645,33 @@
     a.href = URL.createObjectURL(blob);
     a.download = `kz-catering-quotations-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
+  }
+
+  function importData() {
+    document.getElementById("import-input").click();
+  }
+
+  function handleImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (!Array.isArray(imported)) throw new Error();
+        const existing = getHistory();
+        const existingIds = new Set(existing.map(q => q.id));
+        const newEntries = imported.filter(q => !existingIds.has(q.id));
+        const merged = [...newEntries, ...existing].sort((a, b) => b.id - a.id);
+        localStorage.setItem("kz_pos_history", JSON.stringify(merged));
+        document.getElementById("import-input").value = "";
+        renderHistory();
+        alert(`Import successful! ${newEntries.length} new quotation(s) added.`);
+      } catch {
+        alert("Invalid file. Please select a valid backup JSON file.");
+      }
+    };
+    reader.readAsText(file);
   }
 
   renderSummary();
