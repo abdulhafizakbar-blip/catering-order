@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POS — KZ Catering</title>
+<style>
+  :root {
+    --brand: #128c7e;
+    --brand-dark: #0d6e63;
+    --bg: #f5f6f7;
+    --line: #e2e5e9;
+    --red: #e53935;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         background: var(--bg); color: #1a1a1a; }
+
+  /* ── NAV TABS ── */
+  .tabs { display: flex; background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .tab  { flex: 1; padding: 14px; text-align: center; font-weight: 600; font-size: .95rem;
+          cursor: pointer; border-bottom: 3px solid transparent; color: #666; transition: .15s; }
+  .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 16px; max-width: 640px; margin: 0 auto; padding-bottom: 100px; }
+  .page.active { display: block; }
+
+  /* ── SECTION CARD ── */
+  .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 14px;
+          border: 1px solid var(--line); }
+  .card h3 { font-size: .85rem; text-transform: uppercase; letter-spacing: .06em;
+             color: #888; margin-bottom: 12px; }
+
+  /* ── FORM FIELDS ── */
+  label  { display: block; font-weight: 600; font-size: .88rem; margin-bottom: 4px; color: #444; }
+  input, textarea, select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line);
+    border-radius: 10px; font-size: .95rem; background: #fff; outline: none;
+    transition: border-color .15s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--brand); }
+  .field { margin-bottom: 12px; }
+  .row2  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ── MENU ITEMS ── */
+  .menu-item { display: flex; align-items: center; gap: 10px;
+               padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item .info { flex: 1; }
+  .menu-item .iname { font-weight: 600; font-size: .9rem; }
+  .menu-item .iprice { color: #888; font-size: .8rem; }
+  .menu-item input.qty { width: 64px; text-align: center; padding: 6px; }
+
+  /* ── ORDER LINES (added items) ── */
+  .order-line { display: flex; align-items: center; gap: 8px;
+                padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .order-line:last-child { border-bottom: none; }
+  .order-line .ol-name  { flex: 1; font-size: .9rem; font-weight: 600; }
+  .order-line .ol-meta  { font-size: .8rem; color: #888; }
+  .order-line .ol-sub   { font-size: .88rem; font-weight: 700; min-width: 68px; text-align: right; }
+  .order-line .del-btn  { background: none; border: none; color: #ccc; cursor: pointer;
+                          font-size: 1.1rem; padding: 4px; border-radius: 6px; flex: none; width: auto; }
+  .order-line .del-btn:hover { color: var(--red); background: #ffeaea; }
+
+  /* ── CUSTOM ITEM ROW ── */
+  .custom-row { display: grid; grid-template-columns: 1fr 80px 70px auto; gap: 8px; align-items: end; margin-top: 10px; }
+  .custom-row button { flex: none; width: auto; padding: 10px 14px;
+                       background: var(--brand); color: #fff; border: none;
+                       border-radius: 10px; font-weight: 700; cursor: pointer; font-size: .9rem; }
+  .custom-row button:hover { background: var(--brand-dark); }
+
+  /* ── TOTALS ── */
+  .totals { margin-top: 12px; }
+  .totals .trow { display: flex; justify-content: space-between;
+                  padding: 4px 0; font-size: .9rem; color: #555; }
+  .totals .trow.grand { font-size: 1.15rem; font-weight: 800; color: #1a1a1a;
+                         border-top: 2px solid var(--line); margin-top: 6px; padding-top: 10px; }
+
+  /* ── BOTTOM BAR ── */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff;
+         border-top: 1px solid var(--line); padding: 10px 16px; z-index: 10; }
+  .bar .inner { max-width: 640px; margin: 0 auto; display: flex; gap: 10px; }
+  .btn { flex: 1; padding: 13px; border: none; border-radius: 12px;
+         font-size: .95rem; font-weight: 700; cursor: pointer; transition: .15s; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-secondary { background: #f0faf9; color: var(--brand); border: 1.5px solid var(--brand); }
+  .btn-secondary:hover { background: #d6f2ef; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* ── HISTORY PAGE ── */
+  .hist-item { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+               padding: 14px; margin-bottom: 10px; cursor: pointer; transition: .15s; }
+  .hist-item:hover { border-color: var(--brand); }
+  .hist-item .hi-top { display: flex; justify-content: space-between; align-items: center; }
+  .hist-item .hi-name { font-weight: 700; font-size: .95rem; }
+  .hist-item .hi-total { font-weight: 800; color: var(--brand); }
+  .hist-item .hi-meta  { font-size: .78rem; color: #888; margin-top: 4px; }
+  .empty-state { text-align: center; color: #aaa; padding: 60px 0; font-size: .95rem; }
+
+  /* ── MODAL ── */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+              z-index: 100; align-items: center; justify-content: center; padding: 16px; }
+  .modal-bg.open { display: flex; }
+  .modal { background: #fff; border-radius: 18px; width: 100%; max-width: 520px;
+           max-height: 90vh; overflow-y: auto; padding: 20px; }
+  .modal h2 { font-size: 1.1rem; margin-bottom: 4px; }
+  .modal .close-btn { float: right; background: none; border: none; font-size: 1.3rem;
+                      cursor: pointer; color: #888; width: auto; padding: 0; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+  /* ── PRINT LAYOUT ── */
+  @media print {
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area { position: fixed; inset: 0; padding: 30px; font-family: system-ui; }
+    .print-header { text-align: center; margin-bottom: 16px; }
+    .print-header h2 { font-size: 1.4rem; }
+    .print-header p  { color: #555; font-size: .85rem; margin-top: 2px; }
+    .print-divider { border: none; border-top: 1px dashed #aaa; margin: 12px 0; }
+    .print-row { display: flex; justify-content: space-between; font-size: .9rem; padding: 3px 0; }
+    .print-row.bold { font-weight: 700; }
+    .print-row.grand { font-size: 1.1rem; font-weight: 800; border-top: 2px solid #000; padding-top: 6px; margin-top: 4px; }
+    .print-footer { text-align: center; margin-top: 20px; font-size: .78rem; color: #888; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ TABS ══ -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('new')">New Order</div>
+  <div class="tab" onclick="switchTab('history')">History</div>
+</div>
+
+<!-- ══ NEW ORDER PAGE ══ -->
+<div class="page active" id="page-new">
+
+  <!-- Customer Info -->
+  <div class="card" style="margin-top:14px">
+    <h3>Customer Info</h3>
+    <div class="row2">
+      <div class="field">
+        <label>Name</label>
+        <input id="c-name" placeholder="e.g. Ali bin Abu">
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input id="c-phone" type="tel" placeholder="e.g. 0123456789" inputmode="tel">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Event Date</label>
+        <input id="c-date" type="date">
+      </div>
+      <div class="field">
+        <label>Time</label>
+        <input id="c-time" type="time">
+      </div>
+    </div>
+    <div class="field">
+      <label>Delivery Address <span style="font-weight:400;color:#999">(leave blank = pickup)</span></label>
+      <textarea id="c-address" rows="2" placeholder="Street, city, notes for driver"></textarea>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="c-notes" rows="2" placeholder="Allergies, special requests, etc."></textarea>
+    </div>
+  </div>
+
+  <!-- Menu Items -->
+  <div class="card">
+    <h3>Menu</h3>
+    <div id="menu-list"></div>
+  </div>
+
+  <!-- Custom Items -->
+  <div class="card">
+    <h3>Custom Item</h3>
+    <div class="custom-row">
+      <div class="field" style="margin:0">
+        <label>Item Name</label>
+        <input id="ci-name" placeholder="e.g. Special Fried Rice">
+      </div>
+      <div class="field" style="margin:0">
+        <label>Qty</label>
+        <input id="ci-qty" type="number" min="1" value="1" inputmode="numeric">
+      </div>
+      <div class="field" style="margin:0">
+        <label>Price (RM)</label>
+        <input id="ci-price" type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+      </div>
+      <button onclick="addCustomItem()">Add</button>
+    </div>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="card" id="summary-card">
+    <h3>Order Summary</h3>
+    <div id="order-lines"><p style="color:#aaa;font-size:.85rem">No items added yet.</p></div>
+    <div class="totals" id="totals-area" style="display:none">
+      <div class="trow"><span>Subtotal</span><span id="t-sub">RM 0.00</span></div>
+      <div class="trow grand"><span>Total</span><span id="t-total">RM 0.00</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HISTORY PAGE ══ -->
+<div class="page" id="page-history">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px">
+    <h2 style="font-size:1.1rem">Quotation History</h2>
+    <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.82rem" onclick="exportData()">Export JSON</button>
+  </div>
+  <div id="history-list"></div>
+</div>
+
+<!-- ══ BOTTOM BAR ══ -->
+<div class="bar">
+  <div class="inner" id="bar-new">
+    <button class="btn btn-secondary" id="btn-wa"  onclick="sendWhatsApp()"  disabled>WhatsApp</button>
+    <button class="btn btn-primary"   id="btn-save" onclick="saveAndPrint()" disabled>Save & Print</button>
+  </div>
+</div>
+
+<!-- ══ DETAIL MODAL ══ -->
+<div class="modal-bg" id="detail-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <h2 id="m-title">Quotation</h2>
+    <p id="m-meta" style="font-size:.8rem;color:#888;margin-bottom:12px"></p>
+    <div id="m-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="reloadOrder()">Load to Form</button>
+      <button class="btn btn-primary"   onclick="printFromModal()">Print</button>
+      <button class="btn btn-secondary" style="color:var(--red);border-color:var(--red)" onclick="deleteOrder()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HIDDEN PRINT AREA ══ -->
+<div id="print-area" style="display:none"></div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // CONFIG — edit these to match your business
+  const WHATSAPP_NUMBER = "601123043649";
+  const BUSINESS_NAME   = "KZ Catering";
+  const BUSINESS_PHONE  = "011-2304 3649";
+
+  const MENU = [
+    { name: "Nasi Lemak Set",     price: 12.00 },
+    { name: "Chicken Rendang",    price: 15.50 },
+    { name: "Mee Goreng",         price: 10.00 },
+    { name: "Fruit Platter (S)",  price: 18.00 },
+    { name: "Bottled Water",      price:  2.00 },
+  ];
+  // ─────────────────────────────────────────────
+
+  let orderItems = [];   // { name, qty, price }
+  let menuQty    = MENU.map(() => 0);
+  let currentId  = null; // for modal detail view
+
+  // ── Date / time formatters ──
+  function fmtDate(val) {
+    if (!val || val === "—") return val || "—";
+    const [y, m, d] = val.split("-");
+    if (!y || !m || !d) return val;
+    return `${d}-${m}-${y}`;
+  }
+  function fmtTime(val) {
+    if (!val || val === "—") return val || "—";
+    const [hStr, mStr] = val.split(":");
+    let h = parseInt(hStr, 10);
+    const ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `${h}:${mStr} ${ampm}`;
+  }
+  function fmtDateTime(dateVal, timeVal) {
+    const d = fmtDate(dateVal);
+    const t = timeVal && timeVal !== "—" ? fmtTime(timeVal) : "";
+    return t ? `${d}, ${t}` : d;
+  }
+
+  // ── Build menu list ──
+  const menuList = document.getElementById("menu-list");
+  MENU.forEach((item, i) => {
+    const row = document.createElement("div");
+    row.className = "menu-item";
+    row.innerHTML = `
+      <div class="info">
+        <div class="iname">${item.name}</div>
+        <div class="iprice">RM ${item.price.toFixed(2)} each</div>
+      </div>
+      <input class="qty" type="number" min="0" value="0" inputmode="numeric">`;
+    row.querySelector("input").addEventListener("input", e => {
+      menuQty[i] = Math.max(0, parseInt(e.target.value || "0", 10));
+      rebuildOrder();
+    });
+    menuList.appendChild(row);
+  });
+
+  function rebuildOrder() {
+    orderItems = [];
+    MENU.forEach((item, i) => {
+      if (menuQty[i] > 0) orderItems.push({ name: item.name, qty: menuQty[i], price: item.price });
+    });
+    // preserve custom items
+    orderItems = orderItems.concat(customItems);
+    renderSummary();
+  }
+
+  let customItems = [];
+
+  function addCustomItem() {
+    const name  = document.getElementById("ci-name").value.trim();
+    const qty   = parseInt(document.getElementById("ci-qty").value || "1", 10);
+    const price = parseFloat(document.getElementById("ci-price").value || "0");
+    if (!name || qty < 1 || price <= 0) {
+      alert("Please fill in item name, quantity, and price.");
+      return;
+    }
+    customItems.push({ name, qty, price });
+    document.getElementById("ci-name").value  = "";
+    document.getElementById("ci-qty").value   = "1";
+    document.getElementById("ci-price").value = "";
+    rebuildOrder();
+  }
+
+  function renderSummary() {
+    const lines = document.getElementById("order-lines");
+    const totArea = document.getElementById("totals-area");
+
+    const allItems = getAllItems();
+
+    if (allItems.length === 0) {
+      lines.innerHTML = `<p style="color:#aaa;font-size:.85rem">No items added yet.</p>`;
+      totArea.style.display = "none";
+      setBarState(false);
+      return;
+    }
+
+    lines.innerHTML = allItems.map((it, idx) => `
+      <div class="order-line">
+        <div>
+          <div class="ol-name">${it.name}</div>
+          <div class="ol-meta">${it.qty} × RM ${it.price.toFixed(2)}</div>
+        </div>
+        <div class="ol-sub">RM ${(it.qty * it.price).toFixed(2)}</div>
+        <button class="del-btn" onclick="removeItem(${idx})">✕</button>
+      </div>`).join("");
+
+    const sub = allItems.reduce((s, it) => s + it.qty * it.price, 0);
+    document.getElementById("t-sub").textContent   = `RM ${sub.toFixed(2)}`;
+    document.getElementById("t-total").textContent = `RM ${sub.toFixed(2)}`;
+    totArea.style.display = "block";
+    setBarState(true);
+  }
+
+  function getAllItems() {
+    const fromMenu = MENU
+      .map((item, i) => menuQty[i] > 0 ? { name: item.name, qty: menuQty[i], price: item.price } : null)
+      .filter(Boolean);
+    return [...fromMenu, ...customItems];
+  }
+
+  function removeItem(idx) {
+    const all = getAllItems();
+    const item = all[idx];
+    // check if from menu
+    const mi = MENU.findIndex(m => m.name === item.name && item.price === m.price);
+    if (mi >= 0 && menuQty[mi] > 0) {
+      menuQty[mi] = 0;
+      menuList.querySelectorAll("input.qty")[mi].value = 0;
+    } else {
+      const ci = customItems.findIndex(c => c.name === item.name && c.price === item.price);
+      if (ci >= 0) customItems.splice(ci, 1);
+    }
+    rebuildOrder();
+  }
+
+  function setBarState(hasItems) {
+    document.getElementById("btn-wa").disabled   = !hasItems;
+    document.getElementById("btn-save").disabled = !hasItems;
+  }
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    document.querySelectorAll(".tab").forEach((t, i) => {
+      t.classList.toggle("active", (tab === "new" && i === 0) || (tab === "history" && i === 1));
+    });
+    document.getElementById("page-new").classList.toggle("active", tab === "new");
+    document.getElementById("page-history").classList.toggle("active", tab === "history");
+    document.getElementById("bar-new").style.display = tab === "new" ? "flex" : "none";
+    if (tab === "history") renderHistory();
+  }
+
+  // ── Build quotation object ──
+  function buildQuotation() {
+    return {
+      id:       Date.now(),
+      customer: document.getElementById("c-name").value.trim()    || "—",
+      phone:    document.getElementById("c-phone").value.trim()   || "—",
+      date:     document.getElementById("c-date").value           || "—",
+      time:     document.getElementById("c-time").value           || "—",
+      address:  document.getElementById("c-address").value.trim() || "",
+      notes:    document.getElementById("c-notes").value.trim()   || "",
+      items:    getAllItems(),
+      total:    getAllItems().reduce((s, it) => s + it.qty * it.price, 0),
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  // ── Save & Print ──
+  function saveAndPrint() {
+    const q = buildQuotation();
+    if (q.items.length === 0) return;
+    saveToHistory(q);
+    buildPrintArea(q);
+    window.print();
+    resetForm();
+  }
+
+  function buildPrintArea(q) {
+    const area = document.getElementById("print-area");
+    const itemRows = q.items.map(it =>
+      `<div class="print-row">
+         <span>${it.qty} × ${it.name}</span>
+         <span>RM ${(it.qty * it.price).toFixed(2)}</span>
+       </div>`).join("");
+
+    area.innerHTML = `
+      <div class="print-header">
+        <h2>${BUSINESS_NAME}</h2>
+        <p>${BUSINESS_PHONE}</p>
+        <p style="margin-top:6px;font-weight:700">QUOTATION</p>
+        <p>#${q.id} &nbsp;·&nbsp; ${fmtDateTime(new Date(q.createdAt).toLocaleDateString("en-CA"), new Date(q.createdAt).toTimeString().slice(0,5))}</p>
+      </div>
+      <hr class="print-divider">
+      <div class="print-row bold"><span>Customer</span><span>${q.customer}</span></div>
+      <div class="print-row"><span>Phone</span><span>${q.phone}</span></div>
+      <div class="print-row"><span>Event Date</span><span>${fmtDateTime(q.date, q.time)}</span></div>
+      ${q.address ? `<div class="print-row"><span>Delivery</span><span>${q.address}</span></div>` : ""}
+      <hr class="print-divider">
+      ${itemRows}
+      <div class="print-row grand"><span>TOTAL</span><span>RM ${q.total.toFixed(2)}</span></div>
+      ${q.notes ? `<hr class="print-divider"><div class="print-row"><span>Notes</span><span>${q.notes}</span></div>` : ""}
+      <div class="print-footer">Thank you for choosing ${BUSINESS_NAME}!</div>`;
+  }
+
+  // ── WhatsApp ──
+  function sendWhatsApp() {
+    const q = buildQuotation();
+    if (q.items.length === 0) return;
+    saveToHistory(q);
+
+    const lines = [
+      `*Quotation from ${BUSINESS_NAME}*`,
+      `Ref: #${q.id}`,
+      "",
+      `*Customer:* ${q.customer}`,
+      `*Phone:* ${q.phone}`,
+      `*Event Date:* ${fmtDateTime(q.date, q.time)}`,
+      q.address ? `*Delivery:* ${q.address}` : "*Pickup*",
+      "",
+      "*Items:*",
+      ...q.items.map(it => `• ${it.qty} × ${it.name} — RM ${(it.qty * it.price).toFixed(2)}`),
+      "",
+      `*Total: RM ${q.total.toFixed(2)}*`,
+      ...(q.notes ? ["", `Notes: ${q.notes}`] : []),
+    ];
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+    window.open(url, "_blank");
+    resetForm();
+  }
+
+  // ── Reset form ──
+  function resetForm() {
+    ["c-name","c-phone","c-date","c-time","c-address","c-notes"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+    menuQty = MENU.map(() => 0);
+    menuList.querySelectorAll("input.qty").forEach(el => el.value = 0);
+    customItems = [];
+    orderItems  = [];
+    renderSummary();
+  }
+
+  // ── localStorage helpers ──
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem("kz_pos_history") || "[]"); }
+    catch { return []; }
+  }
+  function saveToHistory(q) {
+    const h = getHistory();
+    h.unshift(q);
+    localStorage.setItem("kz_pos_history", JSON.stringify(h));
+  }
+
+  // ── Render history list ──
+  function renderHistory() {
+    const h = getHistory();
+    const el = document.getElementById("history-list");
+    if (h.length === 0) {
+      el.innerHTML = `<div class="empty-state">No quotations saved yet.</div>`;
+      return;
+    }
+    el.innerHTML = h.map(q => `
+      <div class="hist-item" onclick="openModal(${q.id})">
+        <div class="hi-top">
+          <div class="hi-name">${q.customer}</div>
+          <div class="hi-total">RM ${q.total.toFixed(2)}</div>
+        </div>
+        <div class="hi-meta">
+          ${q.phone} &nbsp;·&nbsp; ${fmtDate(q.date)} &nbsp;·&nbsp;
+          ${fmtDate(new Date(q.createdAt).toLocaleDateString("en-CA"))}
+        </div>
+      </div>`).join("");
+  }
+
+  // ── Modal ──
+  function openModal(id) {
+    const q = getHistory().find(x => x.id === id);
+    if (!q) return;
+    currentId = id;
+    document.getElementById("m-title").textContent = `${q.customer} — RM ${q.total.toFixed(2)}`;
+    document.getElementById("m-meta").textContent  =
+      `#${q.id} · ${fmtDateTime(q.date, q.time)} · Saved ${fmtDateTime(new Date(q.createdAt).toLocaleDateString("en-CA"), new Date(q.createdAt).toTimeString().slice(0,5))}`;
+
+    const rows = q.items.map(it =>
+      `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem">
+         <span>${it.qty} × ${it.name}</span>
+         <span>RM ${(it.qty * it.price).toFixed(2)}</span>
+       </div>`).join("");
+
+    document.getElementById("m-body").innerHTML = `
+      <div style="font-size:.85rem;color:#888;margin-bottom:8px">
+        ${q.phone}${q.address ? " · " + q.address : ""}
+      </div>
+      ${rows}
+      <div style="display:flex;justify-content:space-between;font-weight:800;margin-top:8px;
+                  padding-top:8px;border-top:2px solid var(--line)">
+        <span>Total</span><span>RM ${q.total.toFixed(2)}</span>
+      </div>
+      ${q.notes ? `<div style="margin-top:8px;font-size:.8rem;color:#666">Notes: ${q.notes}</div>` : ""}`;
+
+    document.getElementById("detail-modal").classList.add("open");
+  }
+
+  function closeModal() {
+    document.getElementById("detail-modal").classList.remove("open");
+    currentId = null;
+  }
+
+  function printFromModal() {
+    const q = getHistory().find(x => x.id === currentId);
+    if (!q) return;
+    buildPrintArea(q);
+    window.print();
+  }
+
+  function reloadOrder() {
+    const q = getHistory().find(x => x.id === currentId);
+    if (!q) return;
+    closeModal();
+    switchTab("new");
+    document.getElementById("c-name").value    = q.customer === "—" ? "" : q.customer;
+    document.getElementById("c-phone").value   = q.phone    === "—" ? "" : q.phone;
+    document.getElementById("c-date").value    = q.date     === "—" ? "" : q.date;
+    document.getElementById("c-time").value    = q.time     === "—" ? "" : q.time;
+    document.getElementById("c-address").value = q.address;
+    document.getElementById("c-notes").value   = q.notes;
+    // reset quantities first
+    menuQty = MENU.map(() => 0);
+    menuList.querySelectorAll("input.qty").forEach(el => el.value = 0);
+    customItems = [];
+    q.items.forEach(it => {
+      const mi = MENU.findIndex(m => m.name === it.name && m.price === it.price);
+      if (mi >= 0) {
+        menuQty[mi] = it.qty;
+        menuList.querySelectorAll("input.qty")[mi].value = it.qty;
+      } else {
+        customItems.push(it);
+      }
+    });
+    rebuildOrder();
+  }
+
+  function deleteOrder() {
+    if (!confirm("Delete this quotation?")) return;
+    const h = getHistory().filter(x => x.id !== currentId);
+    localStorage.setItem("kz_pos_history", JSON.stringify(h));
+    closeModal();
+    renderHistory();
+  }
+
+  function exportData() {
+    const h = getHistory();
+    const blob = new Blob([JSON.stringify(h, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `kz-catering-quotations-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+  }
+
+  renderSummary();
+</script>
+</body>
+</html>
