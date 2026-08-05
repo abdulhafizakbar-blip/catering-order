@@ -114,12 +114,12 @@
     <input id="name" placeholder="e.g. Sarah">
   </div>
   <div class="field">
-    <label>Phone Number</label>
+    <label>Phone Number <span style="color:var(--gold)">*</span></label>
     <input id="phone" type="tel" placeholder="e.g. 0123456789" inputmode="tel">
   </div>
   <div class="row2">
     <div class="field">
-      <label>Delivery / Pickup Date</label>
+      <label>Delivery / Pickup Date <span style="color:var(--gold)">*</span></label>
       <input id="date" type="date">
     </div>
     <div class="field">
@@ -230,6 +230,31 @@
   }
 
   document.getElementById("send").addEventListener("click", () => {
+    const phone = document.getElementById("phone").value.trim();
+    const date  = document.getElementById("date").value;
+    const t     = total();
+
+    if (!phone) {
+      alert("Phone number is required.");
+      document.getElementById("phone").focus();
+      return;
+    }
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 9 || digits.length > 12) {
+      alert("Please enter a valid Malaysian phone number (e.g. 0123456789).");
+      document.getElementById("phone").focus();
+      return;
+    }
+    if (!date) {
+      alert("Please select a delivery / pickup date.");
+      document.getElementById("date").focus();
+      return;
+    }
+    if (t <= 0) {
+      alert("Please add at least one item.");
+      return;
+    }
+
     const text = encodeURIComponent(buildMessage());
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank");
   });
