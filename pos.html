@@ -419,6 +419,7 @@
     saveToHistory(q);
     buildPrintArea(q);
     window.print();
+    resetForm();
   }
 
   function buildPrintArea(q) {
@@ -502,6 +503,7 @@
 
     const url = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(url, "_blank");
+    resetForm();
   }
 
   // ── Reset form ──
