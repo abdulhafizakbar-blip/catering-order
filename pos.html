@@ -146,13 +146,13 @@
         <input id="c-name" placeholder="e.g. Ali bin Abu">
       </div>
       <div class="field">
-        <label>Phone</label>
+        <label>Phone <span style="color:var(--red)">*</span></label>
         <input id="c-phone" type="tel" placeholder="e.g. 0123456789" inputmode="tel">
       </div>
     </div>
     <div class="row2">
       <div class="field">
-        <label>Event Date</label>
+        <label>Event Date <span style="color:var(--red)">*</span></label>
         <input id="c-date" type="date">
       </div>
       <div class="field">
@@ -415,11 +415,10 @@
   // ── Save & Print ──
   function saveAndPrint() {
     const q = buildQuotation();
-    if (q.items.length === 0) return;
+    if (!validateForm(q)) return;
     saveToHistory(q);
     buildPrintArea(q);
     window.print();
-    resetForm();
   }
 
   function buildPrintArea(q) {
@@ -449,26 +448,46 @@
       <div class="print-footer">Thank you for choosing ${BUSINESS_NAME}!</div>`;
   }
 
+  // ── Validation ──
+  function validateForm(q) {
+    if (!q.phone || q.phone === "—") {
+      alert("Phone number is required to send via WhatsApp.");
+      document.getElementById("c-phone").focus();
+      return false;
+    }
+    const digits = q.phone.replace(/\D/g, "");
+    if (digits.length < 9 || digits.length > 12) {
+      alert("Please enter a valid Malaysian phone number (e.g. 0123456789).");
+      document.getElementById("c-phone").focus();
+      return false;
+    }
+    if (!q.date || q.date === "—") {
+      alert("Event date is required.");
+      document.getElementById("c-date").focus();
+      return false;
+    }
+    if (q.items.length === 0) {
+      alert("Please add at least one item.");
+      return false;
+    }
+    return true;
+  }
+
   // ── WhatsApp ──
   function sendWhatsApp() {
     const q = buildQuotation();
-    if (q.items.length === 0) return;
-    if (!q.phone || q.phone === "—") {
-      alert("Please enter the customer's phone number to send via WhatsApp.");
-      return;
-    }
+    if (!validateForm(q)) return;
     saveToHistory(q);
 
-    const customerNumber = q.phone.replace(/\D/g, "");
-    const formattedNumber = customerNumber.startsWith("0")
-      ? "6" + customerNumber
-      : customerNumber;
+    const digits = q.phone.replace(/\D/g, "");
+    const formattedNumber = digits.startsWith("0") ? "6" + digits : digits;
 
     const lines = [
       `*Quotation from ${BUSINESS_NAME}*`,
       `Ref: #${q.id}`,
       "",
       `*Customer:* ${q.customer}`,
+      `*Phone:* ${q.phone}`,
       `*Event Date:* ${fmtDateTime(q.date, q.time)}`,
       q.address ? `*Delivery:* ${q.address}` : "*Pickup*",
       "",
@@ -483,7 +502,6 @@
 
     const url = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(url, "_blank");
-    resetForm();
   }
 
   // ── Reset form ──
