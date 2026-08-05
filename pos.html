@@ -112,9 +112,8 @@
 
   /* ── PRINT LAYOUT ── */
   @media print {
-    body * { visibility: hidden; }
-    #print-area, #print-area * { visibility: visible; }
-    #print-area { display: block !important; position: fixed; inset: 0; padding: 30px; font-family: system-ui; }
+    body > *:not(#print-area) { display: none !important; }
+    #print-area { display: block !important; position: static; padding: 30px; font-family: system-ui; }
     .print-header { text-align: center; margin-bottom: 16px; }
     .print-header h2 { font-size: 1.4rem; }
     .print-header p  { color: #555; font-size: .85rem; margin-top: 2px; }
