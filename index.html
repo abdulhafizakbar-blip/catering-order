@@ -119,7 +119,11 @@
     cursor: pointer; color: var(--muted); padding: 0; line-height: 1; flex: 0; }
   .sheet-body { flex: 1; overflow-y: auto; }
   .sheet-ft { padding: 12px 16px; border-top: 1px solid var(--line);
-    display: flex; gap: 10px; flex-shrink: 0; background: var(--white); }
+    display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; background: var(--white); }
+  .dlg-warning { display: none; background: #fff3cd; border: 1px solid #f0c040;
+    color: #7a5500; border-radius: 8px; padding: 10px 14px; font-size: .82rem;
+    font-weight: 600; line-height: 1.5; }
+  .sheet-ft-btns { display: flex; gap: 10px; }
   .btn-reset   { flex: 1; background: none; border: 1.5px solid var(--line); color: var(--muted);
     border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 700;
     cursor: pointer; transition: .15s; }
@@ -257,8 +261,11 @@
     </div>
     <div class="sheet-body" id="dlg-body"></div>
     <div class="sheet-ft">
-      <button class="btn-reset"   onclick="resetDialog()">Reset</button>
-      <button class="btn-confirm" onclick="confirmDialog()">Sahkan Pilihan</button>
+      <div class="dlg-warning" id="dlg-warning"></div>
+      <div class="sheet-ft-btns">
+        <button class="btn-reset"   onclick="resetDialog()">Reset</button>
+        <button class="btn-confirm" onclick="confirmDialog()">Sahkan Pilihan</button>
+      </div>
     </div>
   </div>
 </div>
@@ -493,6 +500,7 @@ function openDialog(sess) {
 
       const row = document.createElement("div");
       row.className = "dlg-item" + (tempState[id] ? " checked" : "");
+      row.dataset.sec = sec.key;
       row.innerHTML = `
         <div class="dlg-cb"></div>
         <div class="dlg-info">
@@ -501,14 +509,25 @@ function openDialog(sess) {
           <div class="dlg-price">${RM} ${item.price.toFixed(2)}</div>
         </div>`;
       row.addEventListener("click", () => {
-        tempState[id] = !tempState[id];
-        row.classList.toggle("checked", tempState[id]);
+        const wasChecked = !!tempState[id];
+        // Deselect all in this section (radio behaviour)
+        items.forEach((_, j) => { delete tempState[`${sec.key}-${j}`]; });
+        document.querySelectorAll(`.dlg-item[data-sec="${sec.key}"]`)
+          .forEach(r => r.classList.remove("checked"));
+        // Select this one (unless it was already selected — allow deselect)
+        if (!wasChecked) {
+          tempState[id] = true;
+          row.classList.add("checked");
+        }
+        // Hide warning once user starts selecting
+        document.getElementById("dlg-warning").style.display = "none";
       });
       body.appendChild(row);
     });
   });
 
   document.getElementById("overlay").classList.add("open");
+  document.getElementById("dlg-warning").style.display = "none";
   document.body.style.overflow = "hidden";
 }
 
@@ -521,9 +540,26 @@ function closeDialog() {
 function resetDialog() {
   tempState = {};
   document.querySelectorAll(".dlg-item.checked").forEach(r => r.classList.remove("checked"));
+  document.getElementById("dlg-warning").style.display = "none";
 }
 
 function confirmDialog() {
+  const cfg = SESSIONS[activeSession];
+  const missing = [];
+  cfg.sections.forEach(sec => {
+    if (sec.type === "info" || sec.optional) return;
+    const items = MENU[sec.key] || [];
+    const hasAny = items.some((_, i) => tempState[`${sec.key}-${i}`]);
+    if (!hasAny) missing.push(sec.title);
+  });
+
+  if (missing.length) {
+    const w = document.getElementById("dlg-warning");
+    w.innerHTML = `⚠️ Sila pilih satu item dari: <strong>${missing.join(", ")}</strong>`;
+    w.style.display = "block";
+    return;
+  }
+
   confirmed[activeSession] = { ...tempState };
   closeDialog();
   renderSummaries();
