@@ -106,18 +106,27 @@
     color: var(--gold); padding: 2px 6px; border-radius: 3px; }
   .dlg-grp-lbl { font-size: .61rem; font-weight: 700; letter-spacing: .1em;
     text-transform: uppercase; color: var(--muted); padding: 8px 16px 4px; background: var(--bg); }
-  .dlg-item { display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px; border-bottom: 1px solid var(--line);
-    background: var(--white); transition: background .12s; }
-  .dlg-item.has-qty { background: #fffbee; }
-  .dlg-info { flex: 1; min-width: 0; }
+  .dlg-item { display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid var(--line);
+    background: var(--white); cursor: pointer; transition: background .12s; }
+  .dlg-item:last-of-type { border-bottom: none; }
+  .dlg-item:hover { background: #fffdf7; }
+  .dlg-item.checked { background: #fffbee; }
+  .dlg-cb { width: 22px; height: 22px; flex-shrink: 0;
+    border: 1.5px solid #d0c4a8; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    transition: .15s; background: var(--bg); pointer-events: none; }
+  .dlg-item.checked .dlg-cb { background: var(--gold); border-color: var(--gold); }
+  .dlg-cb::after { content: "✓"; color: #fff; font-size: .72rem;
+    font-weight: 900; opacity: 0; transition: opacity .1s; }
+  .dlg-item.checked .dlg-cb::after { opacity: 1; }
+  .dlg-info { flex: 1; min-width: 0; pointer-events: none; }
   .dlg-name  { font-weight: 600; font-size: .88rem; color: var(--text); }
   .dlg-sub   { font-size: .71rem; color: var(--muted); margin-top: 2px; font-style: italic; }
   .dlg-price { font-size: .75rem; font-weight: 700; color: var(--gold); margin-top: 2px; }
-  .dlg-qty   { width: 64px; text-align: center; padding: 7px 8px; flex-shrink: 0;
-    background: var(--bg); color: var(--text); border: 1.5px solid var(--line);
-    border-radius: 6px; font-size: .9rem; outline: none; }
-  .dlg-qty:focus { border-color: var(--gold); }
+  .dlg-warning { display: none; background: #fff3cd; border: 1px solid #f0c040;
+    color: #7a5500; border-radius: 8px; padding: 10px 14px; font-size: .82rem;
+    font-weight: 600; line-height: 1.5; }
 
   /* ── ORDER LINES ── */
   .order-line { display: flex; align-items: center; gap: 8px;
@@ -283,9 +292,12 @@
       <button class="sheet-close-btn" onclick="closeDialog()">✕</button>
     </div>
     <div class="sheet-body" id="dlg-body"></div>
-    <div class="sheet-ft">
-      <button class="btn-sheet-reset"   onclick="resetDialog()">Reset</button>
-      <button class="btn-sheet-confirm" onclick="confirmDialog()">Add to Order</button>
+    <div class="sheet-ft" style="flex-direction:column;gap:10px">
+      <div class="dlg-warning" id="dlg-warning"></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-sheet-reset"   onclick="resetDialog()">Reset</button>
+        <button class="btn-sheet-confirm" onclick="confirmDialog()">Add to Order</button>
+      </div>
     </div>
   </div>
 </div>
@@ -487,7 +499,7 @@
     },
   };
 
-  // sessQty[session]['key-i'] = qty
+  // sessQty[session]['key-i'] = true/false
   const sessQty = { breakfast: {}, lunch: {}, teatime: {}, servis: {} };
   let activeSession = null;
   let tempQty = {};
@@ -538,25 +550,32 @@
           body.appendChild(gl);
         }
         const row = document.createElement("div");
-        const curQty = tempQty[id] || 0;
-        row.className = "dlg-item" + (curQty > 0 ? " has-qty" : "");
+        row.className = "dlg-item" + (tempQty[id] ? " checked" : "");
+        row.dataset.sec = sec.key;
         row.innerHTML = `
+          <div class="dlg-cb"></div>
           <div class="dlg-info">
             <div class="dlg-name">${item.name}</div>
             ${item.sub ? `<div class="dlg-sub">${item.sub}</div>` : ""}
-            <div class="dlg-price">RM ${item.price.toFixed(2)} / unit</div>
-          </div>
-          <input class="dlg-qty" type="number" min="0" value="${curQty}" inputmode="numeric" placeholder="0">`;
-        const inp = row.querySelector("input");
-        inp.addEventListener("input", () => {
-          const v = Math.max(0, parseInt(inp.value || "0", 10));
-          tempQty[id] = v;
-          row.classList.toggle("has-qty", v > 0);
+            <div class="dlg-price">RM ${item.price.toFixed(2)}</div>
+          </div>`;
+        row.addEventListener("click", () => {
+          const wasChecked = !!tempQty[id];
+          // Radio: deselect all in section
+          items.forEach((_, j) => { delete tempQty[`${sec.key}-${j}`]; });
+          document.querySelectorAll(`.dlg-item[data-sec="${sec.key}"]`)
+            .forEach(r => r.classList.remove("checked"));
+          if (!wasChecked) {
+            tempQty[id] = true;
+            row.classList.add("checked");
+          }
+          document.getElementById("dlg-warning").style.display = "none";
         });
         body.appendChild(row);
       });
     });
 
+    document.getElementById("dlg-warning").style.display = "none";
     document.getElementById("overlay").classList.add("open");
     document.body.style.overflow = "hidden";
   }
@@ -569,16 +588,27 @@
 
   function resetDialog() {
     tempQty = {};
-    document.querySelectorAll(".dlg-qty").forEach(inp => { inp.value = 0; });
-    document.querySelectorAll(".dlg-item.has-qty").forEach(r => r.classList.remove("has-qty"));
+    document.querySelectorAll(".dlg-item.checked").forEach(r => r.classList.remove("checked"));
+    document.getElementById("dlg-warning").style.display = "none";
   }
 
   function confirmDialog() {
-    sessQty[activeSession] = { ...tempQty };
-    Object.keys(sessQty[activeSession]).forEach(k => {
-      if (!sessQty[activeSession][k]) delete sessQty[activeSession][k];
+    const cfg = SESSIONS[activeSession];
+    const missing = [];
+    cfg.sections.forEach(sec => {
+      if (sec.type === "info" || sec.optional) return;
+      const items = MENU[sec.key] || [];
+      const hasAny = items.some((_, i) => tempQty[`${sec.key}-${i}`]);
+      if (!hasAny) missing.push(sec.title);
     });
-    const count = Object.values(sessQty[activeSession]).reduce((s, v) => s + v, 0);
+    if (missing.length) {
+      const w = document.getElementById("dlg-warning");
+      w.innerHTML = `⚠️ Sila pilih satu item dari: <strong>${missing.join(", ")}</strong>`;
+      w.style.display = "block";
+      return;
+    }
+    sessQty[activeSession] = { ...tempQty };
+    const count = Object.values(sessQty[activeSession]).filter(Boolean).length;
     document.getElementById(`sbtn-${activeSession}`).classList.toggle("confirmed", count > 0);
     document.getElementById(`sbadge-${activeSession}`).textContent = count;
     closeDialog();
@@ -596,8 +626,8 @@
       cfg.sections.forEach(sec => {
         if (sec.type === "info") return;
         (MENU[sec.key] || []).forEach((item, i) => {
-          const qty = sessQty[sess][`${sec.key}-${i}`] || 0;
-          if (qty > 0) result.push({ name: item.name, qty, price: item.price });
+          if (sessQty[sess][`${sec.key}-${i}`])
+            result.push({ name: item.name, qty: 1, price: item.price });
         });
       });
     });
@@ -645,19 +675,18 @@
         for (let i = 0; i < items.length; i++) {
           if (items[i].name === item.name && items[i].price === item.price) {
             const key = `${sec.key}-${i}`;
-            if (sessQty[sess][key]) {
-              sessQty[sess][key]--;
-              if (!sessQty[sess][key]) delete sessQty[sess][key];
-              found = true; break;
+          if (sessQty[sess][key]) {
+                delete sessQty[sess][key];
+                found = true; break;
             }
           }
         }
         if (found) break;
       }
       if (found) {
-        const count = Object.values(sessQty[sess]).reduce((s, v) => s + v, 0);
-        document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
-        document.getElementById(`sbadge-${sess}`).textContent = count;
+        const count = Object.values(sessQty[sess]).filter(Boolean).length;
+          document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
+          document.getElementById(`sbadge-${sess}`).textContent = count;
         break;
       }
     }
@@ -881,12 +910,12 @@
           const items = MENU[sec.key] || [];
           const i = items.findIndex(m => m.name === it.name && m.price === it.price);
           if (i >= 0) {
-            sessQty[sess][`${sec.key}-${i}`] = (sessQty[sess][`${sec.key}-${i}`]||0) + it.qty;
+            sessQty[sess][`${sec.key}-${i}`] = true;
             matched = true; break;
           }
         }
         if (matched) {
-          const count = Object.values(sessQty[sess]).reduce((s,v)=>s+v,0);
+          const count = Object.values(sessQty[sess]).filter(Boolean).length;
           document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count>0);
           document.getElementById(`sbadge-${sess}`).textContent = count;
           break;
