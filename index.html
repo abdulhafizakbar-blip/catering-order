@@ -52,7 +52,7 @@
   .req { color: #d03; }
 
   /* ── SESSION BUTTONS ── */
-  .sess-row { display: flex; gap: 10px; }
+  .sess-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .sess-btn {
     flex: 1; display: flex; flex-direction: column; align-items: center;
     justify-content: center; gap: 4px; padding: 16px 6px;
@@ -222,6 +222,12 @@
         <span class="sess-sub">Tea Break</span>
         <span class="sess-badge" id="sbadge-teatime">0</span>
       </div>
+      <div class="sess-btn" id="sbtn-servis" onclick="openDialog('servis')">
+        <span class="sess-emoji">⭐</span>
+        <span class="sess-name">Servis Lain</span>
+        <span class="sess-sub">Other Services</span>
+        <span class="sess-badge" id="sbadge-servis">0</span>
+      </div>
     </div>
   </div>
 
@@ -232,6 +238,7 @@
     <div id="summ-breakfast"></div>
     <div id="summ-lunch"></div>
     <div id="summ-teatime"></div>
+    <div id="summ-servis"></div>
 
     <div class="grand-card" id="grand-card">
       <span class="grand-lbl">Jumlah Keseluruhan</span>
@@ -356,12 +363,15 @@ const MENU = {
 
   // ── MINUM PETANG
   "t-makan": [
-    { name: "Mee Goreng",   price: 5.00 },
-    { name: "Mee Kari",     price: 7.00 },
-    { name: "Bihun Goreng", price: 5.00 },
-    { name: "Bihun Soto",   price: 7.00 },
-    { name: "Laksa",        price: 7.00 },
-    { name: "Kuih Muih",    sub: "Sebiji", price: 0.80 },
+    { name: "Mee Goreng",    price: 5.00 },
+    { name: "Mee Kari",      price: 7.00 },
+    { name: "Bihun Goreng",  price: 5.00 },
+    { name: "Bihun Soto",    price: 7.00 },
+    { name: "Laksa",         price: 7.00 },
+    { name: "Kuih Muih",     sub: "Sebiji", price: 0.80 },
+    { name: "Bebola Daging", sub: "Sebiji", price: 0.70 },
+    { name: "Begerdil",      sub: "Sebiji", price: 1.20 },
+    { name: "Papadom",       price: 1.00 },
   ],
   "t-drink": [
     { name: "Teh",               price: 1.80 },
@@ -370,6 +380,12 @@ const MENU = {
     { name: "Teh 'O Lemon",      price: 1.50 },
     { name: "Nescafe",           price: 2.00 },
     { name: "Air Mineral 250ml", price: 1.00 },
+  ],
+
+  // ── SERVIS LAIN
+  "s-main": [
+    { name: "Set Dome Premium",  price: 150.00 },
+    { name: "Peramusaji",        sub: "Seorang", price: 100.00 },
   ],
 };
 
@@ -404,10 +420,24 @@ const SESSIONS = {
       { key: "t-drink", title: "Air / Minuman" },
     ],
   },
+  servis: {
+    emoji: "⭐", label: "Servis Lain / Other Services",
+    sections: [
+      { key: "s-main", title: "Perkhidmatan" },
+      {
+        type: "info", title: "Perkhidmatan Kami",
+        items: [
+          "Set Buffet Premium — Pinggan, Cawan, Sudu & Garfu (Pakai Buang)",
+          "Plastik Sampah",
+          "Tisu",
+        ],
+      },
+    ],
+  },
 };
 
 // confirmed[session] = { "key-idx": true, ... }
-const confirmed = { breakfast: {}, lunch: {}, teatime: {} };
+const confirmed = { breakfast: {}, lunch: {}, teatime: {}, servis: {} };
 let activeSession = null;
 let tempState = {};
 
@@ -423,6 +453,24 @@ function openDialog(sess) {
   body.innerHTML = "";
 
   cfg.sections.forEach(sec => {
+    // ── INFO SECTION (non-selectable) ──
+    if (sec.type === "info") {
+      const hd = document.createElement("div");
+      hd.className = "dlg-sec-hd";
+      hd.textContent = sec.title;
+      body.appendChild(hd);
+      const card = document.createElement("div");
+      card.style.cssText = "margin: 4px 16px 8px; padding: 12px 14px; background: #fffbee; border: 1px solid #e8e0d0; border-radius: 8px;";
+      card.innerHTML = sec.items.map(t =>
+        `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:.83rem;color:#1a1612">
+           <span style="color:#b8922a;flex-shrink:0;margin-top:1px">✦</span>
+           <span>${t}</span>
+         </div>`
+      ).join("");
+      body.appendChild(card);
+      return;
+    }
+
     const items = MENU[sec.key];
     if (!items?.length) return;
 
