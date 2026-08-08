@@ -51,14 +51,75 @@
   .field { margin-bottom: 12px; }
   .row2  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  /* ── MENU ITEMS ── */
-  .menu-item { display: flex; align-items: center; gap: 10px;
-               padding: 10px 0; border-bottom: 1px solid var(--line); }
-  .menu-item:last-child { border-bottom: none; }
-  .menu-item .info { flex: 1; }
-  .menu-item .iname { font-weight: 600; font-size: .9rem; color: var(--text); }
-  .menu-item .iprice { color: var(--gold); font-size: .8rem; font-weight: 700; margin-top: 2px; }
-  .menu-item input.qty { width: 64px; text-align: center; padding: 6px; }
+  /* ── SESSION BUTTONS ── */
+  .sess-row { display: flex; gap: 10px; }
+  .sess-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 4px; padding: 14px 6px;
+    background: var(--black3); border: 1.5px solid var(--line);
+    border-radius: 12px; cursor: pointer; transition: all .2s;
+    position: relative; text-align: center; user-select: none;
+  }
+  .sess-btn:hover { border-color: var(--gold); }
+  .sess-btn.confirmed { border-color: var(--gold); background: rgba(201,168,76,.08); }
+  .sess-emoji { font-size: 1.7rem; line-height: 1; }
+  .sess-name { font-size: .7rem; font-weight: 800; color: var(--text); letter-spacing: .04em; text-transform: uppercase; }
+  .sess-sub  { font-size: .6rem; color: var(--muted); }
+  .sess-badge {
+    position: absolute; top: -7px; right: -7px;
+    background: var(--gold); color: var(--black); font-size: .58rem; font-weight: 900;
+    min-width: 20px; height: 20px; padding: 0 5px;
+    border-radius: 10px; display: none; align-items: center; justify-content: center;
+  }
+  .sess-btn.confirmed .sess-badge { display: flex; }
+
+  /* ── SESSION DIALOG SHEET ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    z-index: 100; display: none; align-items: flex-end; justify-content: center; }
+  .overlay.open { display: flex; }
+  .sheet { background: var(--black2); border-radius: 20px 20px 0 0;
+    width: 100%; max-width: 640px; max-height: 92vh;
+    display: flex; flex-direction: column; overflow: hidden;
+    border: 1px solid var(--line); border-bottom: none; }
+  .sheet-hd { padding: 14px 18px 12px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .sheet-title { font-size: .96rem; font-weight: 800; color: var(--text); }
+  .sheet-close-btn { background: none; border: none; font-size: 1.3rem;
+    cursor: pointer; color: var(--muted); padding: 0; line-height: 1; flex: 0; }
+  .sheet-close-btn:hover { color: var(--gold); }
+  .sheet-body { flex: 1; overflow-y: auto; }
+  .sheet-ft { padding: 12px 16px; border-top: 1px solid var(--line);
+    display: flex; gap: 10px; flex-shrink: 0; background: var(--black2); }
+  .btn-sheet-reset   { flex: 1; background: none; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 700;
+    cursor: pointer; transition: .15s; letter-spacing: .04em; }
+  .btn-sheet-reset:hover { border-color: var(--muted); color: var(--text); }
+  .btn-sheet-confirm { flex: 2; background: var(--gold); color: var(--black); border: none;
+    border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 800;
+    cursor: pointer; transition: .15s; letter-spacing: .04em; }
+  .btn-sheet-confirm:hover { background: var(--gold-lt); }
+
+  /* ── DIALOG MENU ITEMS ── */
+  .dlg-sec-hd { font-size: .66rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--gold); padding: 12px 16px 8px;
+    background: var(--black); display: flex; align-items: center; gap: 8px; }
+  .dlg-sec-hd::before { content: ""; width: 12px; height: 1px; background: var(--gold); flex-shrink: 0; }
+  .opt-pill { font-size: .57rem; background: var(--gold-dim); border: 1px solid var(--line);
+    color: var(--gold); padding: 2px 6px; border-radius: 3px; }
+  .dlg-grp-lbl { font-size: .61rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted); padding: 8px 16px 4px; background: var(--black); }
+  .dlg-item { display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    background: var(--black2); transition: background .12s; }
+  .dlg-item.has-qty { background: rgba(201,168,76,.06); }
+  .dlg-info { flex: 1; min-width: 0; }
+  .dlg-name  { font-weight: 600; font-size: .88rem; color: var(--text); }
+  .dlg-sub   { font-size: .71rem; color: var(--muted); margin-top: 2px; font-style: italic; }
+  .dlg-price { font-size: .75rem; font-weight: 700; color: var(--gold); margin-top: 2px; }
+  .dlg-qty   { width: 62px; text-align: center; padding: 7px 8px; flex-shrink: 0;
+    background: var(--black3); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; font-size: .9rem; outline: none; }
+  .dlg-qty:focus { border-color: var(--gold); }
 
   /* ── ORDER LINES (added items) ── */
   .order-line { display: flex; align-items: center; gap: 8px;
@@ -180,10 +241,29 @@
     </div>
   </div>
 
-  <!-- Menu Items -->
+  <!-- Session Selector -->
   <div class="card">
-    <h3>Menu</h3>
-    <div id="menu-list"></div>
+    <h3>Menu Sesi</h3>
+    <div class="sess-row">
+      <div class="sess-btn" id="sbtn-breakfast" onclick="openDialog('breakfast')">
+        <span class="sess-emoji">🌅</span>
+        <span class="sess-name">Sarapan</span>
+        <span class="sess-sub">Breakfast</span>
+        <span class="sess-badge" id="sbadge-breakfast">0</span>
+      </div>
+      <div class="sess-btn" id="sbtn-lunch" onclick="openDialog('lunch')">
+        <span class="sess-emoji">☀️</span>
+        <span class="sess-name">Tengahari</span>
+        <span class="sess-sub">Lunch</span>
+        <span class="sess-badge" id="sbadge-lunch">0</span>
+      </div>
+      <div class="sess-btn" id="sbtn-teatime" onclick="openDialog('teatime')">
+        <span class="sess-emoji">🍵</span>
+        <span class="sess-name">Petang</span>
+        <span class="sess-sub">Tea Break</span>
+        <span class="sess-badge" id="sbadge-teatime">0</span>
+      </div>
+    </div>
   </div>
 
   <!-- Custom Items -->
@@ -230,6 +310,21 @@
   <div id="history-list"></div>
 </div>
 
+<!-- ══ SESSION DIALOG ══ -->
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="sheet-hd">
+      <span class="sheet-title" id="dlg-title"></span>
+      <button class="sheet-close-btn" onclick="closeDialog()">✕</button>
+    </div>
+    <div class="sheet-body" id="dlg-body"></div>
+    <div class="sheet-ft">
+      <button class="btn-sheet-reset"   onclick="resetDialog()">Reset</button>
+      <button class="btn-sheet-confirm" onclick="confirmDialog()">Add to Order</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ BOTTOM BAR ══ -->
 <div class="bar">
   <div class="inner" id="bar-new">
@@ -245,7 +340,7 @@
     <p style="font-size:.8rem;color:#888;margin-bottom:16px">Review before printing</p>
 
     <!-- quotation preview -->
-    <div id="confirm-preview" style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px"></div>
+    <div id="confirm-preview" style="background:var(--black3);border-radius:10px;padding:14px;margin-bottom:16px"></div>
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
@@ -279,18 +374,250 @@
   const BUSINESS_NAME   = "KZ Catering";
   const BUSINESS_PHONE  = "011-2304 3649";
 
-  const MENU = [
-    { name: "Nasi Lemak Set",     price: 12.00 },
-    { name: "Chicken Rendang",    price: 15.50 },
-    { name: "Mee Goreng",         price: 10.00 },
-    { name: "Fruit Platter (S)",  price: 18.00 },
-    { name: "Bottled Water",      price:  2.00 },
-  ];
+  const MENU = {
+    // ── SARAPAN
+    "b-makan": [
+      { name: "Nasi Lemak Biasa", sub: "Beras basmathi, ikan bilis, timun, sambal", price: 3.00 },
+      { name: "Mee Goreng",       price: 5.00 },
+      { name: "Bihun Goreng",     price: 5.00 },
+      { name: "Kue Teow Goreng",  price: 5.00 },
+      { name: "Megi Goreng",      price: 5.00 },
+    ],
+    "b-addon": [
+      { name: "Ayam Goreng Tepung",   price: 5.00 },
+      { name: "Ayam Goreng Berempah", price: 5.00 },
+      { name: "Ayam Goreng Biasa",    price: 5.00 },
+      { name: "Ayam Goreng Rendang",  price: 7.00 },
+      { name: "Kuih Muih",            sub: "Sebiji", price: 0.80 },
+    ],
+    "b-drink": [
+      { name: "Teh",          price: 1.80 },
+      { name: "Teh 'O",       price: 1.50 },
+      { name: "Kopi 'O",      price: 1.50 },
+      { name: "Teh 'O Lemon", price: 1.50 },
+      { name: "Nescafe",      price: 2.00 },
+    ],
+    "b-drink-addon": [
+      { name: "Air Mineral 250ml", price: 1.00 },
+    ],
+    // ── TENGAHARI
+    "l-nasi": [
+      { name: "Nasi Putih",   price: 3.00 },
+      { name: "Nasi Minyak",  price: 5.00 },
+      { name: "Nasi Briyani", price: 5.00 },
+      { name: "Nasi Tomato",  price: 5.00 },
+      { name: "Nasi Ayam",    price: 10.00 },
+    ],
+    "l-ayam": [
+      { name: "Ayam Masak Lemak Cili Api", price: 5.00 },
+      { name: "Ayam Masak Merah",          price: 5.00 },
+      { name: "Ayam Masak Kari",           price: 6.00 },
+      { name: "Ayam Masak Rendang",        price: 7.00 },
+      { name: "Ayam Masak Kurma",          price: 6.00 },
+      { name: "Ayam Masak Kicap",          price: 5.00 },
+    ],
+    "l-daging": [
+      { name: "Daging Masak Hitam",                price: 7.00 },
+      { name: "Daging Salai Masak Lemak Cili Api", price: 9.00 },
+      { name: "Daging Masak Kari",                 price: 7.00 },
+      { name: "Daging Masak Rendang",              price: 10.00 },
+    ],
+    "l-ikan": [
+      { name: "Ikan Keli/Sembilang Goreng Berlada",       price: 7.00 },
+      { name: "Ikan Keli/Sembilang Masak Lemak Cili Api", price: 7.00 },
+    ],
+    "l-sayur": [
+      { name: "Sayur Kangkung Goreng", price: 2.00 },
+      { name: "Sayur Campur",          price: 2.00 },
+      { name: "Pajeri Nenas",          price: 2.00 },
+      { name: "Jelatah",               price: 2.00 },
+    ],
+    "l-salad": [
+      { name: "Salad & Ulam", price: 2.00 },
+    ],
+    "l-sambal": [
+      { name: "Sambal Belacan",  price: 2.00 },
+      { name: "Sambal Tempoyak", price: 2.00 },
+      { name: "Budu",            price: 1.00 },
+    ],
+    "l-buah": [
+      { name: "Buah Premium (Tembikai + Anggur)", price: 3.00 },
+      { name: "Tembikai",  price: 1.50 },
+      { name: "Anggur",    price: 2.00 },
+      { name: "Strawberi", price: 3.00 },
+      { name: "Orange",    price: 1.00 },
+    ],
+    "l-air": [
+      { name: "Sirap",          group: "Air Kordial", price: 1.20 },
+      { name: "Anggur",         group: "Air Kordial", price: 1.20 },
+      { name: "Sarsi",          group: "Air Kordial", price: 1.20 },
+      { name: "Tembikai",       group: "Air Premium", price: 2.50 },
+      { name: "Oren",           group: "Air Premium", price: 2.50 },
+      { name: "Ribena + Laici", group: "Air Premium", price: 3.00 },
+    ],
+    // ── MINUM PETANG
+    "t-makan": [
+      { name: "Mee Goreng",   price: 5.00 },
+      { name: "Mee Kari",     price: 7.00 },
+      { name: "Bihun Goreng", price: 5.00 },
+      { name: "Bihun Soto",   price: 7.00 },
+      { name: "Laksa",        price: 7.00 },
+      { name: "Kuih Muih",    sub: "Sebiji", price: 0.80 },
+    ],
+    "t-drink": [
+      { name: "Teh",               price: 1.80 },
+      { name: "Teh 'O",            price: 1.50 },
+      { name: "Kopi 'O",           price: 1.50 },
+      { name: "Teh 'O Lemon",      price: 1.50 },
+      { name: "Nescafe",           price: 2.00 },
+      { name: "Air Mineral 250ml", price: 1.00 },
+    ],
+  };
+
+  const SESSIONS = {
+    breakfast: {
+      emoji: "🌅", label: "Sarapan / Breakfast",
+      sections: [
+        { key: "b-makan",      title: "Makan" },
+        { key: "b-addon",      title: "Add On", optional: true },
+        { key: "b-drink",      title: "Air / Minuman" },
+        { key: "b-drink-addon",title: "Add On Minuman", optional: true },
+      ],
+    },
+    lunch: {
+      emoji: "☀️", label: "Tengahari / Lunch",
+      sections: [
+        { key: "l-nasi",   title: "Nasi" },
+        { key: "l-ayam",   title: "Ayam" },
+        { key: "l-daging", title: "Daging" },
+        { key: "l-ikan",   title: "Ikan" },
+        { key: "l-sayur",  title: "Sayur" },
+        { key: "l-salad",  title: "Salad & Ulam" },
+        { key: "l-sambal", title: "Sambal" },
+        { key: "l-buah",   title: "Buah" },
+        { key: "l-air",    title: "Air / Minuman" },
+      ],
+    },
+    teatime: {
+      emoji: "🍵", label: "Minum Petang / Tea Break",
+      sections: [
+        { key: "t-makan", title: "Makan" },
+        { key: "t-drink", title: "Air / Minuman" },
+      ],
+    },
+  };
   // ─────────────────────────────────────────────
 
-  let orderItems = [];   // { name, qty, price }
-  let menuQty    = MENU.map(() => 0);
-  let currentId  = null; // for modal detail view
+  // sessQty[session]['key-i'] = qty
+  const sessQty = { breakfast: {}, lunch: {}, teatime: {} };
+  let activeSession = null;
+  let tempQty = {};
+
+  // ── DIALOG ──
+  function openDialog(sess) {
+    activeSession = sess;
+    tempQty = { ...sessQty[sess] };
+
+    const cfg = SESSIONS[sess];
+    document.getElementById("dlg-title").textContent = cfg.emoji + "  " + cfg.label;
+
+    const body = document.getElementById("dlg-body");
+    body.innerHTML = "";
+
+    cfg.sections.forEach(sec => {
+      const items = MENU[sec.key];
+      if (!items?.length) return;
+
+      const hd = document.createElement("div");
+      hd.className = "dlg-sec-hd";
+      hd.innerHTML = sec.title + (sec.optional ? ` <span class="opt-pill">Optional</span>` : "");
+      body.appendChild(hd);
+
+      let lastGroup = null;
+      items.forEach((item, i) => {
+        const id = `${sec.key}-${i}`;
+
+        if (item.group && item.group !== lastGroup) {
+          lastGroup = item.group;
+          const gl = document.createElement("div");
+          gl.className = "dlg-grp-lbl";
+          gl.textContent = item.group;
+          body.appendChild(gl);
+        }
+
+        const row = document.createElement("div");
+        const curQty = tempQty[id] || 0;
+        row.className = "dlg-item" + (curQty > 0 ? " has-qty" : "");
+        row.innerHTML = `
+          <div class="dlg-info">
+            <div class="dlg-name">${item.name}</div>
+            ${item.sub ? `<div class="dlg-sub">${item.sub}</div>` : ""}
+            <div class="dlg-price">RM ${item.price.toFixed(2)} / unit</div>
+          </div>
+          <input class="dlg-qty" type="number" min="0" value="${curQty}"
+            inputmode="numeric" placeholder="0">`;
+        const inp = row.querySelector("input");
+        inp.addEventListener("input", () => {
+          const v = Math.max(0, parseInt(inp.value || "0", 10));
+          tempQty[id] = v;
+          row.classList.toggle("has-qty", v > 0);
+        });
+        body.appendChild(row);
+      });
+    });
+
+    document.getElementById("overlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeDialog() {
+    document.getElementById("overlay").classList.remove("open");
+    document.body.style.overflow = "";
+    activeSession = null;
+  }
+
+  function resetDialog() {
+    tempQty = {};
+    document.querySelectorAll(".dlg-qty").forEach(inp => { inp.value = 0; });
+    document.querySelectorAll(".dlg-item.has-qty").forEach(r => r.classList.remove("has-qty"));
+  }
+
+  function confirmDialog() {
+    sessQty[activeSession] = { ...tempQty };
+    // remove zero-qty entries
+    Object.keys(sessQty[activeSession]).forEach(k => {
+      if (!sessQty[activeSession][k]) delete sessQty[activeSession][k];
+    });
+
+    const btn = document.getElementById(`sbtn-${activeSession}`);
+    const badge = document.getElementById(`sbadge-${activeSession}`);
+    const count = Object.values(sessQty[activeSession]).reduce((s, v) => s + v, 0);
+    btn.classList.toggle("confirmed", count > 0);
+    badge.textContent = count;
+
+    closeDialog();
+    rebuildOrder();
+  }
+
+  document.getElementById("overlay").addEventListener("click", e => {
+    if (e.target.id === "overlay") closeDialog();
+  });
+
+  // ── Get all session items as order lines ──
+  function getSessionOrderItems() {
+    const result = [];
+    Object.entries(SESSIONS).forEach(([sess, cfg]) => {
+      cfg.sections.forEach(sec => {
+        (MENU[sec.key] || []).forEach((item, i) => {
+          const qty = sessQty[sess][`${sec.key}-${i}`] || 0;
+          if (qty > 0) result.push({ name: item.name, qty, price: item.price });
+        });
+      });
+    });
+    return result;
+  }
+
+  let customItems = [];
 
   // ── Date / time formatters ──
   function fmtDate(val) {
@@ -313,31 +640,9 @@
     return t ? `${d}, ${t}` : d;
   }
 
-  // ── Build menu list ──
-  const menuList = document.getElementById("menu-list");
-  MENU.forEach((item, i) => {
-    const row = document.createElement("div");
-    row.className = "menu-item";
-    row.innerHTML = `
-      <div class="info">
-        <div class="iname">${item.name}</div>
-        <div class="iprice">RM ${item.price.toFixed(2)} each</div>
-      </div>
-      <input class="qty" type="number" min="0" value="0" inputmode="numeric">`;
-    row.querySelector("input").addEventListener("input", e => {
-      menuQty[i] = Math.max(0, parseInt(e.target.value || "0", 10));
-      rebuildOrder();
-    });
-    menuList.appendChild(row);
-  });
+  let currentId  = null;
 
   function rebuildOrder() {
-    orderItems = [];
-    MENU.forEach((item, i) => {
-      if (menuQty[i] > 0) orderItems.push({ name: item.name, qty: menuQty[i], price: item.price });
-    });
-    // preserve custom items
-    orderItems = orderItems.concat(customItems);
     renderSummary();
   }
 
@@ -389,23 +694,41 @@
   }
 
   function getAllItems() {
-    const fromMenu = MENU
-      .map((item, i) => menuQty[i] > 0 ? { name: item.name, qty: menuQty[i], price: item.price } : null)
-      .filter(Boolean);
-    return [...fromMenu, ...customItems];
+    return [...getSessionOrderItems(), ...customItems];
   }
 
   function removeItem(idx) {
     const all = getAllItems();
     const item = all[idx];
-    // check if from menu
-    const mi = MENU.findIndex(m => m.name === item.name && item.price === m.price);
-    if (mi >= 0 && menuQty[mi] > 0) {
-      menuQty[mi] = 0;
-      menuList.querySelectorAll("input.qty")[mi].value = 0;
+    // try removing from custom items first
+    const ci = customItems.findIndex(c => c.name === item.name && c.price === item.price);
+    if (ci >= 0) {
+      customItems.splice(ci, 1);
     } else {
-      const ci = customItems.findIndex(c => c.name === item.name && c.price === item.price);
-      if (ci >= 0) customItems.splice(ci, 1);
+      // find in session items and zero out
+      let found = false;
+      for (const [sess, cfg] of Object.entries(SESSIONS)) {
+        for (const sec of cfg.sections) {
+          const items = MENU[sec.key] || [];
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].name === item.name && items[i].price === item.price) {
+              const key = `${sec.key}-${i}`;
+              if (sessQty[sess][key]) {
+                sessQty[sess][key]--;
+                if (sessQty[sess][key] <= 0) delete sessQty[sess][key];
+                found = true; break;
+              }
+            }
+          }
+          if (found) break;
+        }
+        if (found) {
+          const count = Object.values(sessQty[sess]).reduce((s, v) => s + v, 0);
+          document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
+          document.getElementById(`sbadge-${sess}`).textContent = count;
+          break;
+        }
+      }
     }
     rebuildOrder();
   }
@@ -577,11 +900,13 @@
     ["c-name","c-phone","c-date","c-time","c-address","c-notes"].forEach(id => {
       document.getElementById(id).value = "";
     });
-    menuQty = MENU.map(() => 0);
-    menuList.querySelectorAll("input.qty").forEach(el => el.value = 0);
+    Object.keys(sessQty).forEach(sess => {
+      sessQty[sess] = {};
+      document.getElementById(`sbtn-${sess}`).classList.remove("confirmed");
+      document.getElementById(`sbadge-${sess}`).textContent = "0";
+    });
     customItems = [];
-    orderItems  = [];
-    renderSummary();
+    rebuildOrder();
   }
 
   // ── localStorage helpers ──
@@ -672,18 +997,33 @@
     document.getElementById("c-time").value    = q.time     === "—" ? "" : q.time;
     document.getElementById("c-address").value = q.address;
     document.getElementById("c-notes").value   = q.notes;
-    // reset quantities first
-    menuQty = MENU.map(() => 0);
-    menuList.querySelectorAll("input.qty").forEach(el => el.value = 0);
+    // reset sessions
+    Object.keys(sessQty).forEach(sess => {
+      sessQty[sess] = {};
+      document.getElementById(`sbtn-${sess}`).classList.remove("confirmed");
+      document.getElementById(`sbadge-${sess}`).textContent = "0";
+    });
     customItems = [];
+    // reload items — try to match to menu, rest go to custom
     q.items.forEach(it => {
-      const mi = MENU.findIndex(m => m.name === it.name && m.price === it.price);
-      if (mi >= 0) {
-        menuQty[mi] = it.qty;
-        menuList.querySelectorAll("input.qty")[mi].value = it.qty;
-      } else {
-        customItems.push(it);
+      let matched = false;
+      for (const [sess, cfg] of Object.entries(SESSIONS)) {
+        for (const sec of cfg.sections) {
+          const items = MENU[sec.key] || [];
+          const i = items.findIndex(m => m.name === it.name && m.price === it.price);
+          if (i >= 0) {
+            sessQty[sess][`${sec.key}-${i}`] = (sessQty[sess][`${sec.key}-${i}`] || 0) + it.qty;
+            matched = true; break;
+          }
+        }
+        if (matched) {
+          const count = Object.values(sessQty[sess]).reduce((s, v) => s + v, 0);
+          document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
+          document.getElementById(`sbadge-${sess}`).textContent = count;
+          break;
+        }
       }
+      if (!matched) customItems.push(it);
     });
     rebuildOrder();
   }
