@@ -6,183 +6,174 @@
 <title>POS — KZ Catering</title>
 <style>
   :root {
-    --gold:      #c9a84c;
-    --gold-lt:   #f0d080;
-    --gold-dim:  rgba(201,168,76,.13);
-    --black:     #0a0a0a;
-    --black2:    #111111;
-    --black3:    #1a1a1a;
-    --line:      rgba(201,168,76,.2);
-    --text:      #f0ead8;
-    --muted:     rgba(240,234,216,.5);
-    --red:       #e53935;
+    --gold:    #b8922a;
+    --gold-lt: #d4a83a;
+    --bg:      #f8f6f1;
+    --white:   #ffffff;
+    --line:    #e8e0d0;
+    --text:    #1a1612;
+    --muted:   #7a6e5f;
+    --dark:    #2a2318;
+    --red:     #cc2200;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-         background: var(--black); color: var(--text); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+         background: var(--bg); color: var(--text); }
 
-  /* ── NAV TABS ── */
-  .tabs { display: flex; background: var(--black2); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
-  .tab  { flex: 1; padding: 14px; text-align: center; font-weight: 600; font-size: .95rem;
-          cursor: pointer; border-bottom: 3px solid transparent; color: var(--muted); transition: .15s; }
-  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  /* ── TABS ── */
+  .tabs { display: flex; background: var(--dark); border-bottom: 2px solid rgba(184,146,42,.3);
+    position: sticky; top: 0; z-index: 10; }
+  .tab { flex: 1; padding: 14px; text-align: center; font-weight: 700; font-size: .9rem;
+    cursor: pointer; border-bottom: 3px solid transparent; color: rgba(255,255,255,.45);
+    transition: .15s; letter-spacing: .04em; }
+  .tab.active { color: var(--gold-lt); border-bottom-color: var(--gold-lt); }
 
   /* ── PAGES ── */
   .page { display: none; padding: 16px; max-width: 640px; margin: 0 auto; padding-bottom: 100px; }
   .page.active { display: block; }
 
-  /* ── SECTION CARD ── */
-  .card { background: var(--black2); border-radius: 10px; padding: 16px; margin-bottom: 14px;
-          border: 1px solid var(--line); }
-  .card h3 { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em;
-             color: var(--gold); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .card h3::before { content: ""; width: 16px; height: 1px; background: var(--gold); }
+  /* ── CARD ── */
+  .card { background: var(--white); border-radius: 12px; padding: 16px; margin-bottom: 14px;
+    border: 1px solid var(--line); }
+  .card h3 { font-size: .68rem; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card h3::before { content: ""; width: 16px; height: 1px; background: var(--gold); flex-shrink: 0; }
 
   /* ── FORM FIELDS ── */
-  label  { display: block; font-weight: 600; font-size: .82rem; margin-bottom: 4px; color: var(--muted); letter-spacing: .04em; }
+  label { display: block; font-weight: 600; font-size: .78rem; margin-bottom: 5px;
+    color: var(--muted); letter-spacing: .03em; }
   input, textarea, select {
-    width: 100%; padding: 10px 12px; border: 1px solid var(--line);
-    border-radius: 6px; font-size: .95rem; background: var(--black3);
-    color: var(--text); outline: none; transition: border-color .15s;
+    width: 100%; padding: 10px 12px; border: 1.5px solid var(--line);
+    border-radius: 7px; font-size: .9rem; background: var(--bg);
+    color: var(--text); outline: none; transition: border-color .15s; font-family: inherit;
   }
-  input:focus, textarea:focus, select:focus { border-color: var(--gold); }
-  input::placeholder, textarea::placeholder { color: rgba(240,234,216,.2); }
-  select option { background: var(--black3); }
+  input:focus, textarea:focus, select:focus { border-color: var(--gold); background: #fffef8; }
+  input::placeholder, textarea::placeholder { color: #c2b49e; }
   .field { margin-bottom: 12px; }
-  .row2  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   /* ── SESSION BUTTONS ── */
   .sess-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .sess-btn {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
+    display: flex; flex-direction: column; align-items: center;
     justify-content: center; gap: 4px; padding: 14px 6px;
-    background: var(--black3); border: 1.5px solid var(--line);
+    background: var(--bg); border: 1.5px solid var(--line);
     border-radius: 12px; cursor: pointer; transition: all .2s;
     position: relative; text-align: center; user-select: none;
   }
-  .sess-btn:hover { border-color: var(--gold); }
-  .sess-btn.confirmed { border-color: var(--gold); background: rgba(201,168,76,.08); }
+  .sess-btn:hover { border-color: var(--gold); background: #fffef8; }
+  .sess-btn.confirmed { border-color: var(--gold); background: #fffbee; }
   .sess-emoji { font-size: 1.7rem; line-height: 1; }
   .sess-name { font-size: .7rem; font-weight: 800; color: var(--text); letter-spacing: .04em; text-transform: uppercase; }
   .sess-sub  { font-size: .6rem; color: var(--muted); }
   .sess-badge {
     position: absolute; top: -7px; right: -7px;
-    background: var(--gold); color: var(--black); font-size: .58rem; font-weight: 900;
+    background: var(--gold); color: #fff; font-size: .58rem; font-weight: 900;
     min-width: 20px; height: 20px; padding: 0 5px;
     border-radius: 10px; display: none; align-items: center; justify-content: center;
   }
   .sess-btn.confirmed .sess-badge { display: flex; }
 
-  /* ── SESSION DIALOG SHEET ── */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6);
+  /* ── DIALOG SHEET ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5);
     z-index: 100; display: none; align-items: flex-end; justify-content: center; }
   .overlay.open { display: flex; }
-  .sheet { background: var(--black2); border-radius: 20px 20px 0 0;
+  .sheet { background: var(--white); border-radius: 20px 20px 0 0;
     width: 100%; max-width: 640px; max-height: 92vh;
-    display: flex; flex-direction: column; overflow: hidden;
-    border: 1px solid var(--line); border-bottom: none; }
+    display: flex; flex-direction: column; overflow: hidden; }
   .sheet-hd { padding: 14px 18px 12px; border-bottom: 1px solid var(--line);
     display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .sheet-title { font-size: .96rem; font-weight: 800; color: var(--text); }
   .sheet-close-btn { background: none; border: none; font-size: 1.3rem;
-    cursor: pointer; color: var(--muted); padding: 0; line-height: 1; flex: 0; }
-  .sheet-close-btn:hover { color: var(--gold); }
+    cursor: pointer; color: var(--muted); padding: 0; line-height: 1; }
+  .sheet-close-btn:hover { color: var(--text); }
   .sheet-body { flex: 1; overflow-y: auto; }
   .sheet-ft { padding: 12px 16px; border-top: 1px solid var(--line);
-    display: flex; gap: 10px; flex-shrink: 0; background: var(--black2); }
-  .btn-sheet-reset   { flex: 1; background: none; border: 1px solid var(--line); color: var(--muted);
-    border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 700;
-    cursor: pointer; transition: .15s; letter-spacing: .04em; }
+    display: flex; gap: 10px; flex-shrink: 0; background: var(--white); }
+  .btn-sheet-reset   { flex: 1; background: none; border: 1.5px solid var(--line); color: var(--muted);
+    border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 700; cursor: pointer; transition: .15s; }
   .btn-sheet-reset:hover { border-color: var(--muted); color: var(--text); }
-  .btn-sheet-confirm { flex: 2; background: var(--gold); color: var(--black); border: none;
-    border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 800;
-    cursor: pointer; transition: .15s; letter-spacing: .04em; }
-  .btn-sheet-confirm:hover { background: var(--gold-lt); }
+  .btn-sheet-confirm { flex: 2; background: var(--gold); color: #fff; border: none;
+    border-radius: 8px; padding: 12px; font-size: .88rem; font-weight: 800; cursor: pointer; transition: .15s; }
+  .btn-sheet-confirm:hover { background: var(--dark); }
 
   /* ── DIALOG MENU ITEMS ── */
   .dlg-sec-hd { font-size: .66rem; font-weight: 700; letter-spacing: .14em;
     text-transform: uppercase; color: var(--gold); padding: 12px 16px 8px;
-    background: var(--black); display: flex; align-items: center; gap: 8px; }
+    background: var(--bg); display: flex; align-items: center; gap: 8px; }
   .dlg-sec-hd::before { content: ""; width: 12px; height: 1px; background: var(--gold); flex-shrink: 0; }
-  .opt-pill { font-size: .57rem; background: var(--gold-dim); border: 1px solid var(--line);
+  .opt-pill { font-size: .57rem; background: #fff8ec; border: 1px solid rgba(184,146,42,.2);
     color: var(--gold); padding: 2px 6px; border-radius: 3px; }
   .dlg-grp-lbl { font-size: .61rem; font-weight: 700; letter-spacing: .1em;
-    text-transform: uppercase; color: var(--muted); padding: 8px 16px 4px; background: var(--black); }
+    text-transform: uppercase; color: var(--muted); padding: 8px 16px 4px; background: var(--bg); }
   .dlg-item { display: flex; align-items: center; gap: 10px;
     padding: 10px 16px; border-bottom: 1px solid var(--line);
-    background: var(--black2); transition: background .12s; }
-  .dlg-item.has-qty { background: rgba(201,168,76,.06); }
+    background: var(--white); transition: background .12s; }
+  .dlg-item.has-qty { background: #fffbee; }
   .dlg-info { flex: 1; min-width: 0; }
   .dlg-name  { font-weight: 600; font-size: .88rem; color: var(--text); }
   .dlg-sub   { font-size: .71rem; color: var(--muted); margin-top: 2px; font-style: italic; }
   .dlg-price { font-size: .75rem; font-weight: 700; color: var(--gold); margin-top: 2px; }
-  .dlg-qty   { width: 62px; text-align: center; padding: 7px 8px; flex-shrink: 0;
-    background: var(--black3); color: var(--text); border: 1px solid var(--line);
+  .dlg-qty   { width: 64px; text-align: center; padding: 7px 8px; flex-shrink: 0;
+    background: var(--bg); color: var(--text); border: 1.5px solid var(--line);
     border-radius: 6px; font-size: .9rem; outline: none; }
   .dlg-qty:focus { border-color: var(--gold); }
 
-  /* ── ORDER LINES (added items) ── */
+  /* ── ORDER LINES ── */
   .order-line { display: flex; align-items: center; gap: 8px;
-                padding: 8px 0; border-bottom: 1px solid var(--line); }
+    padding: 8px 0; border-bottom: 1px solid var(--line); }
   .order-line:last-child { border-bottom: none; }
-  .order-line .ol-name  { flex: 1; font-size: .9rem; font-weight: 600; color: var(--text); }
-  .order-line .ol-meta  { font-size: .8rem; color: var(--muted); }
-  .order-line .ol-sub   { font-size: .88rem; font-weight: 700; min-width: 68px; text-align: right; color: var(--gold); }
-  .order-line .del-btn  { background: none; border: none; color: rgba(240,234,216,.2); cursor: pointer;
-                          font-size: 1.1rem; padding: 4px; border-radius: 6px; flex: none; width: auto; }
-  .order-line .del-btn:hover { color: var(--red); background: rgba(229,57,53,.15); }
-
-  /* ── CUSTOM ITEM ROW ── */
-  .custom-row { display: grid; grid-template-columns: 1fr 80px 70px auto; gap: 8px; align-items: end; margin-top: 10px; }
-  .custom-row button { flex: none; width: auto; padding: 10px 14px;
-                       background: var(--gold); color: var(--black); border: none;
-                       border-radius: 6px; font-weight: 800; cursor: pointer; font-size: .9rem;
-                       letter-spacing: .04em; }
-  .custom-row button:hover { background: var(--gold-lt); }
+  .ol-name { flex: 1; font-size: .9rem; font-weight: 600; color: var(--text); }
+  .ol-meta { font-size: .78rem; color: var(--muted); }
+  .ol-sub  { font-size: .88rem; font-weight: 700; min-width: 72px; text-align: right; color: var(--gold); }
+  .del-btn { background: none; border: none; color: #ccc; cursor: pointer;
+    font-size: 1rem; padding: 4px 6px; border-radius: 5px; flex: none; }
+  .del-btn:hover { color: var(--red); background: rgba(204,34,0,.08); }
 
   /* ── TOTALS ── */
   .totals { margin-top: 12px; }
-  .totals .trow { display: flex; justify-content: space-between;
-                  padding: 4px 0; font-size: .9rem; color: var(--muted); }
-  .totals .trow.grand { font-size: 1.15rem; font-weight: 800; color: var(--gold);
-                         border-top: 1px solid var(--line); margin-top: 6px; padding-top: 10px; }
+  .trow { display: flex; justify-content: space-between; padding: 4px 0;
+    font-size: .9rem; color: var(--muted); }
+  .trow.grand { font-size: 1.1rem; font-weight: 800; color: var(--gold);
+    border-top: 1px solid var(--line); margin-top: 6px; padding-top: 10px; }
 
   /* ── BOTTOM BAR ── */
-  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--black2);
-         border-top: 1px solid var(--line); padding: 10px 16px; z-index: 10; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--white);
+    border-top: 2px solid var(--line); padding: 10px 16px; z-index: 10;
+    box-shadow: 0 -4px 16px rgba(0,0,0,.08); }
   .bar .inner { max-width: 640px; margin: 0 auto; display: flex; gap: 10px; }
-  .btn { flex: 1; padding: 13px; border: none; border-radius: 6px;
-         font-size: .95rem; font-weight: 800; cursor: pointer; transition: .15s;
-         letter-spacing: .04em; text-transform: uppercase; }
-  .btn-primary { background: var(--gold); color: var(--black); }
-  .btn-primary:hover { background: var(--gold-lt); }
-  .btn-secondary { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
-  .btn-secondary:hover { background: var(--gold-dim); }
-  .btn:disabled { opacity: .3; cursor: not-allowed; }
+  .btn { flex: 1; padding: 13px; border: none; border-radius: 8px;
+    font-size: .9rem; font-weight: 800; cursor: pointer; transition: .15s;
+    letter-spacing: .04em; text-transform: uppercase; }
+  .btn-primary   { background: var(--gold); color: #fff; }
+  .btn-primary:hover   { background: var(--dark); }
+  .btn-secondary { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
+  .btn-secondary:hover { background: #fffbee; }
+  .btn:disabled  { opacity: .3; cursor: not-allowed; }
 
-  /* ── HISTORY PAGE ── */
-  .hist-item { background: var(--black2); border: 1px solid var(--line); border-radius: 10px;
-               padding: 14px; margin-bottom: 10px; cursor: pointer; transition: .15s; }
-  .hist-item:hover { border-color: var(--gold); background: var(--gold-dim); }
-  .hist-item .hi-top { display: flex; justify-content: space-between; align-items: center; }
-  .hist-item .hi-name { font-weight: 700; font-size: .95rem; color: var(--text); }
-  .hist-item .hi-total { font-weight: 800; color: var(--gold); }
-  .hist-item .hi-meta  { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+  /* ── HISTORY ── */
+  .hist-item { background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px; margin-bottom: 10px; cursor: pointer; transition: .15s; }
+  .hist-item:hover { border-color: var(--gold); background: #fffbee; }
+  .hi-top { display: flex; justify-content: space-between; align-items: center; }
+  .hi-name  { font-weight: 700; font-size: .95rem; color: var(--text); }
+  .hi-total { font-weight: 800; color: var(--gold); }
+  .hi-meta  { font-size: .76rem; color: var(--muted); margin-top: 4px; }
   .empty-state { text-align: center; color: var(--muted); padding: 60px 0; font-size: .95rem; }
 
   /* ── MODAL ── */
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7);
-              z-index: 100; align-items: center; justify-content: center; padding: 16px; }
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 100; align-items: center; justify-content: center; padding: 16px; }
   .modal-bg.open { display: flex; }
-  .modal { background: var(--black2); border: 1px solid var(--line); border-radius: 16px;
-           width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 20px; }
+  .modal { background: var(--white); border: 1px solid var(--line); border-radius: 16px;
+    width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 20px; }
   .modal h2 { font-size: 1.1rem; margin-bottom: 4px; color: var(--text); }
   .modal .close-btn { float: right; background: none; border: none; font-size: 1.3rem;
-                      cursor: pointer; color: var(--muted); width: auto; padding: 0; }
-  .modal .close-btn:hover { color: var(--gold); }
+    cursor: pointer; color: var(--muted); width: auto; padding: 0; }
+  .modal .close-btn:hover { color: var(--text); }
   .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 
-  /* ── PRINT LAYOUT ── */
+  /* ── PRINT ── */
   @media print {
     body > *:not(#print-area) { display: none !important; }
     #print-area { display: block !important; position: static; padding: 30px; font-family: system-ui; }
@@ -191,7 +182,7 @@
     .print-header p  { color: #555; font-size: .85rem; margin-top: 2px; }
     .print-divider { border: none; border-top: 1px dashed #aaa; margin: 12px 0; }
     .print-row { display: flex; justify-content: space-between; font-size: .9rem; padding: 3px 0; }
-    .print-row.bold { font-weight: 700; }
+    .print-row.bold  { font-weight: 700; }
     .print-row.grand { font-size: 1.1rem; font-weight: 800; border-top: 2px solid #000; padding-top: 6px; margin-top: 4px; }
     .print-footer { text-align: center; margin-top: 20px; font-size: .78rem; color: #888; }
   }
@@ -212,33 +203,21 @@
   <div class="card" style="margin-top:14px">
     <h3>Customer Info</h3>
     <div class="row2">
-      <div class="field">
-        <label>Name</label>
-        <input id="c-name" placeholder="e.g. Ali bin Abu">
-      </div>
-      <div class="field">
-        <label>Phone <span style="color:var(--red)">*</span></label>
-        <input id="c-phone" type="tel" placeholder="e.g. 0123456789" inputmode="tel">
-      </div>
+      <div class="field"><label>Name</label>
+        <input id="c-name" placeholder="e.g. Ali bin Abu"></div>
+      <div class="field"><label>Phone <span style="color:var(--red)">*</span></label>
+        <input id="c-phone" type="tel" placeholder="e.g. 0123456789" inputmode="tel"></div>
     </div>
     <div class="row2">
-      <div class="field">
-        <label>Event Date <span style="color:var(--red)">*</span></label>
-        <input id="c-date" type="date">
-      </div>
-      <div class="field">
-        <label>Time</label>
-        <input id="c-time" type="time">
-      </div>
+      <div class="field"><label>Event Date <span style="color:var(--red)">*</span></label>
+        <input id="c-date" type="date"></div>
+      <div class="field"><label>Time</label>
+        <input id="c-time" type="time"></div>
     </div>
-    <div class="field">
-      <label>Delivery Address <span style="font-weight:400;color:#999">(leave blank = pickup)</span></label>
-      <textarea id="c-address" rows="2" placeholder="Street, city, notes for driver"></textarea>
-    </div>
-    <div class="field">
-      <label>Notes</label>
-      <textarea id="c-notes" rows="2" placeholder="Allergies, special requests, etc."></textarea>
-    </div>
+    <div class="field"><label>Delivery Address <span style="font-weight:400;color:var(--muted)">(leave blank = pickup)</span></label>
+      <textarea id="c-address" rows="2" placeholder="Street, city, notes for driver"></textarea></div>
+    <div class="field" style="margin-bottom:0"><label>Notes</label>
+      <textarea id="c-notes" rows="2" placeholder="Allergies, special requests, etc."></textarea></div>
   </div>
 
   <!-- Session Selector -->
@@ -272,30 +251,10 @@
     </div>
   </div>
 
-  <!-- Custom Items -->
-  <div class="card">
-    <h3>Custom Item</h3>
-    <div class="custom-row">
-      <div class="field" style="margin:0">
-        <label>Item Name</label>
-        <input id="ci-name" placeholder="e.g. Special Fried Rice">
-      </div>
-      <div class="field" style="margin:0">
-        <label>Qty</label>
-        <input id="ci-qty" type="number" min="1" value="1" inputmode="numeric">
-      </div>
-      <div class="field" style="margin:0">
-        <label>Price (RM)</label>
-        <input id="ci-price" type="number" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
-      </div>
-      <button onclick="addCustomItem()">Add</button>
-    </div>
-  </div>
-
   <!-- Order Summary -->
   <div class="card" id="summary-card">
     <h3>Order Summary</h3>
-    <div id="order-lines"><p style="color:#aaa;font-size:.85rem">No items added yet.</p></div>
+    <div id="order-lines"><p style="color:var(--muted);font-size:.85rem">No items added yet.</p></div>
     <div class="totals" id="totals-area" style="display:none">
       <div class="trow"><span>Subtotal</span><span id="t-sub">RM 0.00</span></div>
       <div class="trow grand"><span>Total</span><span id="t-total">RM 0.00</span></div>
@@ -306,10 +265,10 @@
 <!-- ══ HISTORY PAGE ══ -->
 <div class="page" id="page-history">
   <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px">
-    <h2 style="font-size:1.1rem">Quotation History</h2>
+    <h2 style="font-size:1.1rem;color:var(--text)">Quotation History</h2>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.82rem" onclick="importData()">Import JSON</button>
-      <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.82rem" onclick="exportData()">Export JSON</button>
+      <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.8rem" onclick="importData()">Import JSON</button>
+      <button class="btn btn-secondary" style="flex:none;padding:8px 14px;font-size:.8rem" onclick="exportData()">Export JSON</button>
     </div>
   </div>
   <input type="file" id="import-input" accept=".json" style="display:none" onchange="handleImport(event)">
@@ -343,11 +302,8 @@
   <div class="modal">
     <button class="close-btn" onclick="closeConfirm()">✕</button>
     <h2 style="margin-bottom:4px">Confirm Order</h2>
-    <p style="font-size:.8rem;color:#888;margin-bottom:16px">Review before printing</p>
-
-    <!-- quotation preview -->
-    <div id="confirm-preview" style="background:var(--black3);border-radius:10px;padding:14px;margin-bottom:16px"></div>
-
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px">Review before printing</p>
+    <div id="confirm-preview" style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px"></div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
       <button class="btn btn-primary"   onclick="confirmAndPrint()">Print Quotation</button>
@@ -360,7 +316,7 @@
   <div class="modal">
     <button class="close-btn" onclick="closeModal()">✕</button>
     <h2 id="m-title">Quotation</h2>
-    <p id="m-meta" style="font-size:.8rem;color:#888;margin-bottom:12px"></p>
+    <p id="m-meta" style="font-size:.8rem;color:var(--muted);margin-bottom:12px"></p>
     <div id="m-body"></div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="reloadOrder()">Load to Form</button>
@@ -370,12 +326,10 @@
   </div>
 </div>
 
-<!-- ══ HIDDEN PRINT AREA ══ -->
+<!-- ══ PRINT AREA ══ -->
 <div id="print-area" style="display:none"></div>
 
 <script>
-  // ─────────────────────────────────────────────
-  // CONFIG — edit these to match your business
   const WHATSAPP_NUMBER = "601123043649";
   const BUSINESS_NAME   = "KZ Catering";
   const BUSINESS_PHONE  = "011-2304 3649";
@@ -438,9 +392,7 @@
       { name: "Pajeri Nenas",          price: 2.00 },
       { name: "Jelatah",               price: 2.00 },
     ],
-    "l-salad": [
-      { name: "Salad & Ulam", price: 2.00 },
-    ],
+    "l-salad":  [{ name: "Salad & Ulam", price: 2.00 }],
     "l-sambal": [
       { name: "Sambal Belacan",  price: 2.00 },
       { name: "Sambal Tempoyak", price: 2.00 },
@@ -481,7 +433,6 @@
       { name: "Nescafe",           price: 2.00 },
       { name: "Air Mineral 250ml", price: 1.00 },
     ],
-
     // ── SERVIS LAIN
     "s-main": [
       { name: "Set Dome Premium", price: 150.00 },
@@ -493,10 +444,10 @@
     breakfast: {
       emoji: "🌅", label: "Sarapan / Breakfast",
       sections: [
-        { key: "b-makan",      title: "Makan" },
-        { key: "b-addon",      title: "Add On", optional: true },
-        { key: "b-drink",      title: "Air / Minuman" },
-        { key: "b-drink-addon",title: "Add On Minuman", optional: true },
+        { key: "b-makan",       title: "Makan" },
+        { key: "b-addon",       title: "Add On", optional: true },
+        { key: "b-drink",       title: "Air / Minuman" },
+        { key: "b-drink-addon", title: "Add On Minuman", optional: true },
       ],
     },
     lunch: {
@@ -535,12 +486,13 @@
       ],
     },
   };
-  // ─────────────────────────────────────────────
 
   // sessQty[session]['key-i'] = qty
   const sessQty = { breakfast: {}, lunch: {}, teatime: {}, servis: {} };
   let activeSession = null;
   let tempQty = {};
+  let currentId = null;
+  let pendingQuotation = null;
 
   // ── DIALOG ──
   function openDialog(sess) {
@@ -554,19 +506,15 @@
     body.innerHTML = "";
 
     cfg.sections.forEach(sec => {
-      // ── INFO SECTION (non-selectable) ──
       if (sec.type === "info") {
         const hd = document.createElement("div");
-        hd.className = "dlg-sec-hd";
-        hd.textContent = sec.title;
+        hd.className = "dlg-sec-hd"; hd.textContent = sec.title;
         body.appendChild(hd);
         const card = document.createElement("div");
-        card.style.cssText = "margin: 4px 16px 8px; padding: 12px 14px; background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.2); border-radius: 8px;";
+        card.style.cssText = "margin:4px 16px 8px;padding:12px 14px;background:#fffbee;border:1px solid #e8e0d0;border-radius:8px;";
         card.innerHTML = sec.items.map(t =>
-          `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:.83rem;color:var(--text)">
-             <span style="color:var(--gold);flex-shrink:0;margin-top:1px">✦</span>
-             <span>${t}</span>
-           </div>`
+          `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:.83rem;color:#1a1612">
+             <span style="color:#b8922a;flex-shrink:0">✦</span><span>${t}</span></div>`
         ).join("");
         body.appendChild(card);
         return;
@@ -583,15 +531,12 @@
       let lastGroup = null;
       items.forEach((item, i) => {
         const id = `${sec.key}-${i}`;
-
         if (item.group && item.group !== lastGroup) {
           lastGroup = item.group;
           const gl = document.createElement("div");
-          gl.className = "dlg-grp-lbl";
-          gl.textContent = item.group;
+          gl.className = "dlg-grp-lbl"; gl.textContent = item.group;
           body.appendChild(gl);
         }
-
         const row = document.createElement("div");
         const curQty = tempQty[id] || 0;
         row.className = "dlg-item" + (curQty > 0 ? " has-qty" : "");
@@ -601,8 +546,7 @@
             ${item.sub ? `<div class="dlg-sub">${item.sub}</div>` : ""}
             <div class="dlg-price">RM ${item.price.toFixed(2)} / unit</div>
           </div>
-          <input class="dlg-qty" type="number" min="0" value="${curQty}"
-            inputmode="numeric" placeholder="0">`;
+          <input class="dlg-qty" type="number" min="0" value="${curQty}" inputmode="numeric" placeholder="0">`;
         const inp = row.querySelector("input");
         inp.addEventListener("input", () => {
           const v = Math.max(0, parseInt(inp.value || "0", 10));
@@ -631,30 +575,26 @@
 
   function confirmDialog() {
     sessQty[activeSession] = { ...tempQty };
-    // remove zero-qty entries
     Object.keys(sessQty[activeSession]).forEach(k => {
       if (!sessQty[activeSession][k]) delete sessQty[activeSession][k];
     });
-
-    const btn = document.getElementById(`sbtn-${activeSession}`);
-    const badge = document.getElementById(`sbadge-${activeSession}`);
     const count = Object.values(sessQty[activeSession]).reduce((s, v) => s + v, 0);
-    btn.classList.toggle("confirmed", count > 0);
-    badge.textContent = count;
-
+    document.getElementById(`sbtn-${activeSession}`).classList.toggle("confirmed", count > 0);
+    document.getElementById(`sbadge-${activeSession}`).textContent = count;
     closeDialog();
-    rebuildOrder();
+    renderSummary();
   }
 
   document.getElementById("overlay").addEventListener("click", e => {
     if (e.target.id === "overlay") closeDialog();
   });
 
-  // ── Get all session items as order lines ──
-  function getSessionOrderItems() {
+  // ── GET ALL ORDER ITEMS ──
+  function getAllItems() {
     const result = [];
     Object.entries(SESSIONS).forEach(([sess, cfg]) => {
       cfg.sections.forEach(sec => {
+        if (sec.type === "info") return;
         (MENU[sec.key] || []).forEach((item, i) => {
           const qty = sessQty[sess][`${sec.key}-${i}`] || 0;
           if (qty > 0) result.push({ name: item.name, qty, price: item.price });
@@ -664,68 +604,22 @@
     return result;
   }
 
-  let customItems = [];
-
-  // ── Date / time formatters ──
-  function fmtDate(val) {
-    if (!val || val === "—") return val || "—";
-    const [y, m, d] = val.split("-");
-    if (!y || !m || !d) return val;
-    return `${d}-${m}-${y}`;
-  }
-  function fmtTime(val) {
-    if (!val || val === "—") return val || "—";
-    const [hStr, mStr] = val.split(":");
-    let h = parseInt(hStr, 10);
-    const ampm = h >= 12 ? "PM" : "AM";
-    h = h % 12 || 12;
-    return `${h}:${mStr} ${ampm}`;
-  }
-  function fmtDateTime(dateVal, timeVal) {
-    const d = fmtDate(dateVal);
-    const t = timeVal && timeVal !== "—" ? fmtTime(timeVal) : "";
-    return t ? `${d}, ${t}` : d;
-  }
-
-  let currentId  = null;
-
-  function rebuildOrder() {
-    renderSummary();
-  }
-
-  let customItems = [];
-
-  function addCustomItem() {
-    const name  = document.getElementById("ci-name").value.trim();
-    const qty   = parseInt(document.getElementById("ci-qty").value || "1", 10);
-    const price = parseFloat(document.getElementById("ci-price").value || "0");
-    if (!name || qty < 1 || price <= 0) {
-      alert("Please fill in item name, quantity, and price.");
-      return;
-    }
-    customItems.push({ name, qty, price });
-    document.getElementById("ci-name").value  = "";
-    document.getElementById("ci-qty").value   = "1";
-    document.getElementById("ci-price").value = "";
-    rebuildOrder();
-  }
-
+  // ── RENDER SUMMARY ──
   function renderSummary() {
-    const lines = document.getElementById("order-lines");
+    const lines   = document.getElementById("order-lines");
     const totArea = document.getElementById("totals-area");
+    const all     = getAllItems();
 
-    const allItems = getAllItems();
-
-    if (allItems.length === 0) {
-      lines.innerHTML = `<p style="color:#aaa;font-size:.85rem">No items added yet.</p>`;
+    if (!all.length) {
+      lines.innerHTML = `<p style="color:var(--muted);font-size:.85rem">No items added yet.</p>`;
       totArea.style.display = "none";
-      setBarState(false);
+      document.getElementById("btn-save").disabled = true;
       return;
     }
 
-    lines.innerHTML = allItems.map((it, idx) => `
+    lines.innerHTML = all.map((it, idx) => `
       <div class="order-line">
-        <div>
+        <div style="flex:1">
           <div class="ol-name">${it.name}</div>
           <div class="ol-meta">${it.qty} × RM ${it.price.toFixed(2)}</div>
         </div>
@@ -733,112 +627,112 @@
         <button class="del-btn" onclick="removeItem(${idx})">✕</button>
       </div>`).join("");
 
-    const sub = allItems.reduce((s, it) => s + it.qty * it.price, 0);
+    const sub = all.reduce((s, it) => s + it.qty * it.price, 0);
     document.getElementById("t-sub").textContent   = `RM ${sub.toFixed(2)}`;
     document.getElementById("t-total").textContent = `RM ${sub.toFixed(2)}`;
     totArea.style.display = "block";
-    setBarState(true);
-  }
-
-  function getAllItems() {
-    return [...getSessionOrderItems(), ...customItems];
+    document.getElementById("btn-save").disabled = false;
   }
 
   function removeItem(idx) {
-    const all = getAllItems();
+    const all  = getAllItems();
     const item = all[idx];
-    // try removing from custom items first
-    const ci = customItems.findIndex(c => c.name === item.name && c.price === item.price);
-    if (ci >= 0) {
-      customItems.splice(ci, 1);
-    } else {
-      // find in session items and zero out
-      let found = false;
-      for (const [sess, cfg] of Object.entries(SESSIONS)) {
-        for (const sec of cfg.sections) {
-          const items = MENU[sec.key] || [];
-          for (let i = 0; i < items.length; i++) {
-            if (items[i].name === item.name && items[i].price === item.price) {
-              const key = `${sec.key}-${i}`;
-              if (sessQty[sess][key]) {
-                sessQty[sess][key]--;
-                if (sessQty[sess][key] <= 0) delete sessQty[sess][key];
-                found = true; break;
-              }
+    let found  = false;
+    for (const [sess, cfg] of Object.entries(SESSIONS)) {
+      for (const sec of cfg.sections) {
+        if (sec.type === "info") continue;
+        const items = MENU[sec.key] || [];
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].name === item.name && items[i].price === item.price) {
+            const key = `${sec.key}-${i}`;
+            if (sessQty[sess][key]) {
+              sessQty[sess][key]--;
+              if (!sessQty[sess][key]) delete sessQty[sess][key];
+              found = true; break;
             }
           }
-          if (found) break;
         }
-        if (found) {
-          const count = Object.values(sessQty[sess]).reduce((s, v) => s + v, 0);
-          document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
-          document.getElementById(`sbadge-${sess}`).textContent = count;
-          break;
-        }
+        if (found) break;
+      }
+      if (found) {
+        const count = Object.values(sessQty[sess]).reduce((s, v) => s + v, 0);
+        document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
+        document.getElementById(`sbadge-${sess}`).textContent = count;
+        break;
       }
     }
-    rebuildOrder();
+    renderSummary();
   }
 
-  function setBarState(hasItems) {
-    document.getElementById("btn-save").disabled = !hasItems;
-  }
-
-  // ── Tab switching ──
+  // ── TAB ──
   function switchTab(tab) {
-    document.querySelectorAll(".tab").forEach((t, i) => {
-      t.classList.toggle("active", (tab === "new" && i === 0) || (tab === "history" && i === 1));
-    });
+    document.querySelectorAll(".tab").forEach((t, i) =>
+      t.classList.toggle("active", (tab === "new" && i === 0) || (tab === "history" && i === 1)));
     document.getElementById("page-new").classList.toggle("active", tab === "new");
     document.getElementById("page-history").classList.toggle("active", tab === "history");
     document.getElementById("bar-new").style.display = tab === "new" ? "flex" : "none";
     if (tab === "history") renderHistory();
   }
 
-  // ── Build quotation object ──
+  // ── DATE/TIME ──
+  function fmtDate(val) {
+    if (!val || val === "—") return val || "—";
+    const [y,m,d] = val.split("-");
+    if (!y || !m || !d) return val;
+    return `${d}-${m}-${y}`;
+  }
+  function fmtTime(val) {
+    if (!val || val === "—") return val || "—";
+    const [hStr, mStr] = val.split(":");
+    let h = parseInt(hStr, 10);
+    return `${h%12||12}:${mStr} ${h>=12?"PM":"AM"}`;
+  }
+  function fmtDateTime(dateVal, timeVal) {
+    const d = fmtDate(dateVal);
+    const t = timeVal && timeVal !== "—" ? fmtTime(timeVal) : "";
+    return t ? `${d}, ${t}` : d;
+  }
+
+  // ── BUILD QUOTATION ──
   function buildQuotation() {
+    const items = getAllItems();
     return {
-      id:       Date.now(),
-      customer: document.getElementById("c-name").value.trim()    || "—",
-      phone:    document.getElementById("c-phone").value.trim()   || "—",
-      date:     document.getElementById("c-date").value           || "—",
-      time:     document.getElementById("c-time").value           || "—",
-      address:  document.getElementById("c-address").value.trim() || "",
-      notes:    document.getElementById("c-notes").value.trim()   || "",
-      items:    getAllItems(),
-      total:    getAllItems().reduce((s, it) => s + it.qty * it.price, 0),
+      id:        Date.now(),
+      customer:  document.getElementById("c-name").value.trim()    || "—",
+      phone:     document.getElementById("c-phone").value.trim()   || "—",
+      date:      document.getElementById("c-date").value           || "—",
+      time:      document.getElementById("c-time").value           || "—",
+      address:   document.getElementById("c-address").value.trim() || "",
+      notes:     document.getElementById("c-notes").value.trim()   || "",
+      items,
+      total:     items.reduce((s, it) => s + it.qty * it.price, 0),
       createdAt: new Date().toISOString(),
     };
   }
 
-  let pendingQuotation = null;
-
-  // ── Save & Print ──
+  // ── CONFIRM ORDER ──
   function saveAndPrint() {
     const q = buildQuotation();
     if (!validateForm(q)) return;
     pendingQuotation = q;
 
-    const itemRows = q.items.map(it => `
-      <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:.88rem">
-        <span>${it.qty} × ${it.name}</span>
-        <span>RM ${(it.qty * it.price).toFixed(2)}</span>
-      </div>`).join("");
+    const itemRows = q.items.map(it =>
+      `<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:.88rem">
+         <span>${it.qty} × ${it.name}</span><span>RM ${(it.qty*it.price).toFixed(2)}</span></div>`
+    ).join("");
 
     document.getElementById("confirm-preview").innerHTML = `
       <div style="font-weight:700;font-size:1rem;margin-bottom:2px">${q.customer}</div>
-      <div style="font-size:.8rem;color:#888;margin-bottom:10px">
-        ${q.phone} &nbsp;·&nbsp; ${fmtDateTime(q.date, q.time)}
-        ${q.address ? "<br>" + q.address : ""}
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:10px">
+        ${q.phone} &nbsp;·&nbsp; ${fmtDateTime(q.date,q.time)}
+        ${q.address ? "<br>"+q.address : ""}
       </div>
-      <div style="border-top:1px solid var(--line);padding-top:10px;margin-bottom:8px">
-        ${itemRows}
-      </div>
+      <div style="border-top:1px solid var(--line);padding-top:10px;margin-bottom:8px">${itemRows}</div>
       <div style="display:flex;justify-content:space-between;font-weight:800;font-size:1rem;
                   border-top:2px solid var(--line);padding-top:8px">
         <span>Total</span><span>RM ${q.total.toFixed(2)}</span>
       </div>
-      ${q.notes ? `<div style="margin-top:8px;font-size:.8rem;color:#666;padding-top:8px;border-top:1px solid var(--line)">Notes: ${q.notes}</div>` : ""}`;
+      ${q.notes?`<div style="margin-top:8px;font-size:.8rem;color:var(--muted);padding-top:8px;border-top:1px solid var(--line)">Notes: ${q.notes}</div>`:""}`;
 
     document.getElementById("confirm-modal").classList.add("open");
   }
@@ -859,90 +753,43 @@
   }
 
   function buildPrintArea(q) {
-    const area = document.getElementById("print-area");
     const itemRows = q.items.map(it =>
-      `<div class="print-row">
-         <span>${it.qty} × ${it.name}</span>
-         <span>RM ${(it.qty * it.price).toFixed(2)}</span>
-       </div>`).join("");
-
-    area.innerHTML = `
+      `<div class="print-row"><span>${it.qty} × ${it.name}</span><span>RM ${(it.qty*it.price).toFixed(2)}</span></div>`
+    ).join("");
+    document.getElementById("print-area").innerHTML = `
       <div class="print-header">
-        <h2>${BUSINESS_NAME}</h2>
-        <p>${BUSINESS_PHONE}</p>
+        <h2>${BUSINESS_NAME}</h2><p>${BUSINESS_PHONE}</p>
         <p style="margin-top:6px;font-weight:700">QUOTATION</p>
-        <p>#${q.id} &nbsp;·&nbsp; ${fmtDateTime(new Date(q.createdAt).toLocaleDateString("en-CA"), new Date(q.createdAt).toTimeString().slice(0,5))}</p>
+        <p>#${q.id} &nbsp;·&nbsp; ${fmtDateTime(new Date(q.createdAt).toLocaleDateString("en-CA"),new Date(q.createdAt).toTimeString().slice(0,5))}</p>
       </div>
       <hr class="print-divider">
       <div class="print-row bold"><span>Customer</span><span>${q.customer}</span></div>
       <div class="print-row"><span>Phone</span><span>${q.phone}</span></div>
-      <div class="print-row"><span>Event Date</span><span>${fmtDateTime(q.date, q.time)}</span></div>
-      ${q.address ? `<div class="print-row"><span>Delivery</span><span>${q.address}</span></div>` : ""}
+      <div class="print-row"><span>Event Date</span><span>${fmtDateTime(q.date,q.time)}</span></div>
+      ${q.address?`<div class="print-row"><span>Delivery</span><span>${q.address}</span></div>`:""}
       <hr class="print-divider">
       ${itemRows}
       <div class="print-row grand"><span>TOTAL</span><span>RM ${q.total.toFixed(2)}</span></div>
-      ${q.notes ? `<hr class="print-divider"><div class="print-row"><span>Notes</span><span>${q.notes}</span></div>` : ""}
+      ${q.notes?`<hr class="print-divider"><div class="print-row"><span>Notes</span><span>${q.notes}</span></div>`:""}
       <div class="print-footer">Thank you for choosing ${BUSINESS_NAME}!</div>`;
   }
 
-  // ── Validation ──
+  // ── VALIDATION ──
   function validateForm(q) {
     if (!q.phone || q.phone === "—") {
-      alert("Phone number is required to send via WhatsApp.");
-      document.getElementById("c-phone").focus();
-      return false;
+      alert("Phone number is required."); document.getElementById("c-phone").focus(); return false;
     }
-    const digits = q.phone.replace(/\D/g, "");
-    if (digits.length < 9 || digits.length > 12) {
-      alert("Please enter a valid Malaysian phone number (e.g. 0123456789).");
-      document.getElementById("c-phone").focus();
-      return false;
+    if (q.phone.replace(/\D/g,"").length < 9) {
+      alert("Please enter a valid Malaysian phone number."); document.getElementById("c-phone").focus(); return false;
     }
     if (!q.date || q.date === "—") {
-      alert("Event date is required.");
-      document.getElementById("c-date").focus();
-      return false;
+      alert("Event date is required."); document.getElementById("c-date").focus(); return false;
     }
-    if (q.items.length === 0) {
-      alert("Please add at least one item.");
-      return false;
-    }
+    if (!q.items.length) { alert("Please add at least one item."); return false; }
     return true;
   }
 
-  // ── WhatsApp ──
-  function sendWhatsApp() {
-    const q = buildQuotation();
-    if (!validateForm(q)) return;
-    saveToHistory(q);
-
-    const digits = q.phone.replace(/\D/g, "");
-    const formattedNumber = digits.startsWith("0") ? "6" + digits : digits;
-
-    const lines = [
-      `*Quotation from ${BUSINESS_NAME}*`,
-      `Ref: #${q.id}`,
-      "",
-      `*Customer:* ${q.customer}`,
-      `*Phone:* ${q.phone}`,
-      `*Event Date:* ${fmtDateTime(q.date, q.time)}`,
-      q.address ? `*Delivery:* ${q.address}` : "*Pickup*",
-      "",
-      "*Items:*",
-      ...q.items.map(it => `• ${it.qty} × ${it.name} — RM ${(it.qty * it.price).toFixed(2)}`),
-      "",
-      `*Total: RM ${q.total.toFixed(2)}*`,
-      ...(q.notes ? ["", `Notes: ${q.notes}`] : []),
-      "",
-      `_${BUSINESS_NAME} · ${BUSINESS_PHONE}_`,
-    ];
-
-    const url = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
-    window.open(url, "_blank");
-    resetForm();
-  }
-
-  // ── Reset form ──
+  // ── RESET ──
   function resetForm() {
     ["c-name","c-phone","c-date","c-time","c-address","c-notes"].forEach(id => {
       document.getElementById(id).value = "";
@@ -952,169 +799,135 @@
       document.getElementById(`sbtn-${sess}`).classList.remove("confirmed");
       document.getElementById(`sbadge-${sess}`).textContent = "0";
     });
-    customItems = [];
-    rebuildOrder();
+    renderSummary();
   }
 
-  // ── localStorage helpers ──
+  // ── HISTORY ──
   function getHistory() {
-    try { return JSON.parse(localStorage.getItem("kz_pos_history") || "[]"); }
-    catch { return []; }
+    try { return JSON.parse(localStorage.getItem("kz_pos_history") || "[]"); } catch { return []; }
   }
   function saveToHistory(q) {
-    const h = getHistory();
-    h.unshift(q);
+    const h = getHistory(); h.unshift(q);
     localStorage.setItem("kz_pos_history", JSON.stringify(h));
   }
-
-  // ── Render history list ──
   function renderHistory() {
-    const h = getHistory().slice().sort((a, b) => {
-      const da = a.date && a.date !== "—" ? a.date : "0000-00-00";
-      const db = b.date && b.date !== "—" ? b.date : "0000-00-00";
+    const h = getHistory().slice().sort((a,b) => {
+      const da = a.date && a.date!=="—" ? a.date : "0000-00-00";
+      const db = b.date && b.date!=="—" ? b.date : "0000-00-00";
       return db.localeCompare(da);
     });
     const el = document.getElementById("history-list");
-    if (h.length === 0) {
-      el.innerHTML = `<div class="empty-state">No quotations saved yet.</div>`;
-      return;
-    }
+    if (!h.length) { el.innerHTML = `<div class="empty-state">No quotations saved yet.</div>`; return; }
     el.innerHTML = h.map(q => `
       <div class="hist-item" onclick="openModal(${q.id})">
         <div class="hi-top">
           <div class="hi-name">${q.customer}</div>
           <div class="hi-total">RM ${q.total.toFixed(2)}</div>
         </div>
-        <div class="hi-meta">
-          #${q.id} &nbsp;·&nbsp; ${q.phone} &nbsp;·&nbsp; ${fmtDate(q.date)} &nbsp;·&nbsp;
-          ${fmtDate(new Date(q.createdAt).toLocaleDateString("en-CA"))}
-        </div>
+        <div class="hi-meta">#${q.id} &nbsp;·&nbsp; ${q.phone} &nbsp;·&nbsp; ${fmtDate(q.date)}</div>
       </div>`).join("");
   }
 
-  // ── Modal ──
+  // ── MODAL ──
   function openModal(id) {
     const q = getHistory().find(x => x.id === id);
     if (!q) return;
     currentId = id;
     document.getElementById("m-title").textContent = `${q.customer} — RM ${q.total.toFixed(2)}`;
     document.getElementById("m-meta").textContent  =
-      `#${q.id} · ${fmtDateTime(q.date, q.time)} · Saved ${fmtDateTime(new Date(q.createdAt).toLocaleDateString("en-CA"), new Date(q.createdAt).toTimeString().slice(0,5))}`;
-
+      `#${q.id} · ${fmtDateTime(q.date,q.time)} · Saved ${fmtDate(new Date(q.createdAt).toLocaleDateString("en-CA"))}`;
     const rows = q.items.map(it =>
-      `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem">
-         <span>${it.qty} × ${it.name}</span>
-         <span>RM ${(it.qty * it.price).toFixed(2)}</span>
-       </div>`).join("");
-
+      `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;color:var(--text)">
+         <span>${it.qty} × ${it.name}</span><span style="color:var(--gold);font-weight:700">RM ${(it.qty*it.price).toFixed(2)}</span></div>`
+    ).join("");
     document.getElementById("m-body").innerHTML = `
-      <div style="font-size:.85rem;color:#888;margin-bottom:8px">
-        ${q.phone}${q.address ? " · " + q.address : ""}
-      </div>
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:8px">${q.phone}${q.address?" · "+q.address:""}</div>
       ${rows}
       <div style="display:flex;justify-content:space-between;font-weight:800;margin-top:8px;
-                  padding-top:8px;border-top:2px solid var(--line)">
-        <span>Total</span><span>RM ${q.total.toFixed(2)}</span>
+                  padding-top:8px;border-top:2px solid var(--line);color:var(--text)">
+        <span>Total</span><span style="color:var(--gold)">RM ${q.total.toFixed(2)}</span>
       </div>
-      ${q.notes ? `<div style="margin-top:8px;font-size:.8rem;color:#666">Notes: ${q.notes}</div>` : ""}`;
-
+      ${q.notes?`<div style="margin-top:8px;font-size:.8rem;color:var(--muted)">Notes: ${q.notes}</div>`:""}`;
     document.getElementById("detail-modal").classList.add("open");
   }
 
-  function closeModal() {
-    document.getElementById("detail-modal").classList.remove("open");
-    currentId = null;
-  }
+  function closeModal() { document.getElementById("detail-modal").classList.remove("open"); currentId = null; }
 
   function printFromModal() {
     const q = getHistory().find(x => x.id === currentId);
-    if (!q) return;
-    buildPrintArea(q);
-    window.print();
+    if (q) { buildPrintArea(q); window.print(); }
   }
 
   function reloadOrder() {
     const q = getHistory().find(x => x.id === currentId);
     if (!q) return;
-    closeModal();
-    switchTab("new");
+    closeModal(); switchTab("new");
     document.getElementById("c-name").value    = q.customer === "—" ? "" : q.customer;
     document.getElementById("c-phone").value   = q.phone    === "—" ? "" : q.phone;
     document.getElementById("c-date").value    = q.date     === "—" ? "" : q.date;
     document.getElementById("c-time").value    = q.time     === "—" ? "" : q.time;
     document.getElementById("c-address").value = q.address;
     document.getElementById("c-notes").value   = q.notes;
-    // reset sessions
     Object.keys(sessQty).forEach(sess => {
       sessQty[sess] = {};
       document.getElementById(`sbtn-${sess}`).classList.remove("confirmed");
       document.getElementById(`sbadge-${sess}`).textContent = "0";
     });
-    customItems = [];
-    // reload items — try to match to menu, rest go to custom
     q.items.forEach(it => {
       let matched = false;
       for (const [sess, cfg] of Object.entries(SESSIONS)) {
         for (const sec of cfg.sections) {
+          if (sec.type === "info") continue;
           const items = MENU[sec.key] || [];
           const i = items.findIndex(m => m.name === it.name && m.price === it.price);
           if (i >= 0) {
-            sessQty[sess][`${sec.key}-${i}`] = (sessQty[sess][`${sec.key}-${i}`] || 0) + it.qty;
+            sessQty[sess][`${sec.key}-${i}`] = (sessQty[sess][`${sec.key}-${i}`]||0) + it.qty;
             matched = true; break;
           }
         }
         if (matched) {
-          const count = Object.values(sessQty[sess]).reduce((s, v) => s + v, 0);
-          document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count > 0);
+          const count = Object.values(sessQty[sess]).reduce((s,v)=>s+v,0);
+          document.getElementById(`sbtn-${sess}`).classList.toggle("confirmed", count>0);
           document.getElementById(`sbadge-${sess}`).textContent = count;
           break;
         }
       }
-      if (!matched) customItems.push(it);
     });
-    rebuildOrder();
+    renderSummary();
   }
 
   function deleteOrder() {
     if (!confirm("Delete this quotation?")) return;
     const h = getHistory().filter(x => x.id !== currentId);
     localStorage.setItem("kz_pos_history", JSON.stringify(h));
-    closeModal();
-    renderHistory();
+    closeModal(); renderHistory();
   }
 
   function exportData() {
-    const h = getHistory();
-    const blob = new Blob([JSON.stringify(h, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(getHistory(),null,2)],{type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `kz-catering-quotations-${new Date().toISOString().slice(0,10)}.json`;
     a.click();
   }
 
-  function importData() {
-    document.getElementById("import-input").click();
-  }
+  function importData() { document.getElementById("import-input").click(); }
 
   function handleImport(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]; if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(ev) {
+    reader.onload = ev => {
       try {
         const imported = JSON.parse(ev.target.result);
         if (!Array.isArray(imported)) throw new Error();
         const existing = getHistory();
-        const existingIds = new Set(existing.map(q => q.id));
-        const newEntries = imported.filter(q => !existingIds.has(q.id));
-        const merged = [...newEntries, ...existing].sort((a, b) => b.id - a.id);
+        const ids = new Set(existing.map(q => q.id));
+        const merged = [...imported.filter(q=>!ids.has(q.id)), ...existing].sort((a,b)=>b.id-a.id);
         localStorage.setItem("kz_pos_history", JSON.stringify(merged));
         document.getElementById("import-input").value = "";
         renderHistory();
-        alert(`Import successful! ${newEntries.length} new quotation(s) added.`);
-      } catch {
-        alert("Invalid file. Please select a valid backup JSON file.");
-      }
+        alert(`Import successful! ${merged.length - existing.length} new quotation(s) added.`);
+      } catch { alert("Invalid file. Please select a valid backup JSON file."); }
     };
     reader.readAsText(file);
   }
